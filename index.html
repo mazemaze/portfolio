@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yujiro Hikawa | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════ THEME ══════ */
+:root{--radius:18px;--radius-sm:12px;--accent:#818cf8;--accent-bright:#a5b4fc;--cyan:#22d3ee;--pink:#f472b6;--green:#4ade80;--yellow:#facc15;--orange:#fb923c;--transition:.45s cubic-bezier(.4,0,.2,1)}
+[data-theme="dark"]{--bg:#06060a;--bg2:#0c0c12;--bg-card:rgba(255,255,255,0.03);--bg-card-hover:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.06);--border-hover:rgba(129,140,248,0.25);--text:#f0f0f5;--text-muted:#82828f;--text-dim:#4e4e5a;--nav-bg:rgba(6,6,10,0.72);--selection:rgba(129,140,248,0.3);--orb-opacity:.35;--card-glow:0 0 0 1px rgba(255,255,255,.04),0 8px 40px rgba(129,140,248,.06);--loader-bg:#06060a;--ring-bg:rgba(255,255,255,.04)}
+[data-theme="light"]{--bg:#f8f9fc;--bg2:#f0f1f5;--bg-card:rgba(255,255,255,0.8);--bg-card-hover:rgba(255,255,255,1);--border:rgba(0,0,0,0.06);--border-hover:rgba(99,102,241,0.25);--text:#111118;--text-muted:#6b6b7b;--text-dim:#a0a0ac;--nav-bg:rgba(248,249,252,0.8);--selection:rgba(99,102,241,0.15);--orb-opacity:.12;--card-glow:0 0 0 1px rgba(0,0,0,.04),0 8px 30px rgba(99,102,241,.04);--loader-bg:#f8f9fc;--ring-bg:rgba(0,0,0,.04)}
+
+/* ══════ LOADER ══════ */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--loader-bg);display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.loader-ring{width:40px;height:40px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#scroll-progress{position:fixed;top:0;left:0;height:2px;z-index:200;background:linear-gradient(90deg,var(--accent),var(--cyan),var(--pink));width:0;transition:width .05s linear}
+
+/* ══════ BASE ══════ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter','Noto Sans JP',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--transition),color var(--transition)}
+::selection{background:var(--selection)}
+
+/* ══════ NAV ══════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(24px) saturate(1.5);border-bottom:1px solid var(--border);transition:background var(--transition),border-color var(--transition)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:900;font-size:1.1rem;letter-spacing:-.04em}
+.logo span{background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+nav .links{display:flex;gap:1.5rem;align-items:center}
+nav .links a{color:var(--text-muted);text-decoration:none;font-size:.8rem;font-weight:500;transition:color .2s;position:relative;padding-bottom:3px}
+nav .links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--accent);transition:width .3s;border-radius:2px}
+nav .links a:hover,nav .links a.active{color:var(--text)}
+nav .links a:hover::after,nav .links a.active::after{width:100%}
+.nav-controls{display:flex;gap:.5rem;align-items:center}
+.nav-btn{background:var(--ring-bg);border:1px solid var(--border);color:var(--text-muted);padding:.3rem .65rem;border-radius:8px;font-size:.7rem;cursor:pointer;font-weight:700;transition:all .2s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ══════ HERO ══════ */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:7rem 2rem 5rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:var(--orb-opacity);animation:float 10s ease-in-out infinite alternate;transition:opacity var(--transition)}
+.orb-1{width:450px;height:450px;background:var(--accent);top:-15%;left:15%}
+.orb-2{width:350px;height:350px;background:var(--cyan);top:25%;right:-8%;animation-delay:3s}
+.orb-3{width:280px;height:280px;background:var(--pink);bottom:5%;left:0;animation-delay:5s}
+@keyframes float{0%{transform:translate(0,0) scale(1)}100%{transform:translate(25px,-25px) scale(1.08)}}
+.hero-content{position:relative;z-index:1;max-width:760px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem 1.1rem;border-radius:50px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.15);color:var(--accent-bright);font-size:.75rem;font-weight:600;margin-bottom:2rem}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:900;letter-spacing:-.045em;line-height:1.12;margin-bottom:1.2rem}
+.hero .name{display:block;margin-bottom:.2rem}
+.hero .role-line{display:block;min-height:clamp(3rem,6vw,4.5rem);position:relative}
+.typed-text{background:linear-gradient(135deg,var(--accent),var(--cyan),var(--pink));background-size:200% 200%;animation:gshift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.typed-cursor{display:inline-block;width:3px;height:.85em;background:var(--accent);margin-left:3px;animation:blink 1s step-end infinite;vertical-align:text-bottom}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.hero-desc{color:var(--text-muted);font-size:1rem;line-height:1.85;margin-bottom:2.5rem;max-width:580px;margin-left:auto;margin-right:auto}
+.hero-buttons{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.75rem 1.8rem;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;text-decoration:none;transition:all .3s;cursor:pointer;border:none}
+.btn-glow{background:linear-gradient(135deg,var(--accent),#6366f1);color:#fff;box-shadow:0 4px 20px rgba(99,102,241,.3),inset 0 1px 0 rgba(255,255,255,.12)}
+.btn-glow:hover{transform:translateY(-2px);box-shadow:0 8px 35px rgba(99,102,241,.4)}
+.btn-glass{background:var(--ring-bg);color:var(--text);border:1px solid var(--border)}
+.btn-glass:hover{border-color:var(--accent);background:rgba(129,140,248,.06)}
+.btn-dl{font-size:.78rem;padding:.6rem 1.3rem}
+
+/* ══════ SECTIONS ══════ */
+section{padding:5.5rem 2rem;max-width:1100px;margin:0 auto}
+.section-label{display:inline-flex;align-items:center;gap:.5rem;color:var(--accent);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem}
+.section-label::before{content:'';width:18px;height:2px;background:var(--accent);border-radius:2px}
+.section-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
+.section-desc{color:var(--text-muted);font-size:.9rem;margin-bottom:2.8rem;max-width:480px}
+
+/* ══════ STATS ══════ */
+.stats-section{padding:0 2rem 4rem}
+.stats-row{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;transition:background var(--transition)}
+.stat{background:var(--bg2);padding:2rem 1.2rem;text-align:center;transition:background var(--transition)}
+.stat:hover{background:var(--bg-card-hover)}
+.stat-num{font-size:2.5rem;font-weight:900;letter-spacing:-.04em;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.stat-num .unit{font-size:.9rem;font-weight:700}
+.stat-label{color:var(--text-muted);font-size:.75rem;margin-top:.25rem;font-weight:500}
+
+/* ══════ GLASS CARD ══════ */
+.glass{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(12px);transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.glass::before{content:'';position:absolute;inset:0;border-radius:var(--radius);background:linear-gradient(135deg,rgba(129,140,248,.06) 0%,transparent 50%,rgba(34,211,238,.04) 100%);opacity:0;transition:opacity .4s;pointer-events:none}
+.glass:hover{border-color:var(--border-hover);box-shadow:var(--card-glow);transform:translateY(-4px)}
+.glass:hover::before{opacity:1}
+
+/* ══════ SKILLS ══════ */
+.skills-layout{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.skill-cards{display:flex;flex-direction:column;gap:.8rem}
+.skill-card{padding:1.5rem 1.6rem;border-left:3px solid transparent}
+.skill-card:hover{transform:translateY(-3px) translateX(4px)}
+.skill-card.sk-tech{border-left-color:var(--accent)}
+.skill-card.sk-infra{border-left-color:var(--cyan)}
+.skill-card.sk-ai{border-left-color:var(--pink)}
+.skill-card.sk-mgmt{border-left-color:var(--green)}
+.skill-card h3{font-size:.9rem;font-weight:700;margin-bottom:.6rem}
+.skill-card h3 .sk-label{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:.5rem;vertical-align:middle}
+.sk-tech .sk-label{background:var(--accent)}
+.sk-infra .sk-label{background:var(--cyan)}
+.sk-ai .sk-label{background:var(--pink)}
+.sk-mgmt .sk-label{background:var(--green)}
+.skill-card p{color:var(--text-muted);font-size:.78rem;line-height:1.75}
+.chart-container{padding:1.8rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(12px);transition:background var(--transition),border-color var(--transition)}
+.chart-container h3{font-size:.85rem;font-weight:700;margin-bottom:1.2rem;text-align:center}
+.radar-wrap{position:relative;width:300px;height:300px;margin:0 auto}
+.radar-svg{width:100%;height:100%}
+.tech-bars{margin-top:1.5rem}
+.tech-bar-item{margin-bottom:.85rem}
+.tech-bar-label{display:flex;justify-content:space-between;margin-bottom:.3rem}
+.tech-bar-name{font-size:.75rem;font-weight:600}
+.tech-bar-pct{font-size:.7rem;font-weight:700;color:var(--accent)}
+.tech-bar-track{height:5px;background:var(--ring-bg);border-radius:3px;overflow:hidden}
+.tech-bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.5s cubic-bezier(.16,1,.3,1)}
+
+/* ══════ TIMELINE ══════ */
+.timeline{position:relative;padding-left:2.8rem}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--cyan),var(--pink),transparent);border-radius:2px}
+.tl-item{position:relative;margin-bottom:2.5rem;padding-left:1.8rem}
+.tl-dot{position:absolute;left:-2.8rem;top:.35rem;width:22px;height:22px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;transition:all .3s}
+.tl-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent);transition:all .3s}
+.tl-item:hover .tl-dot{border-color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.2)}
+.tl-item:hover .tl-dot::after{background:var(--cyan)}
+.tl-period{display:inline-block;padding:.2rem .7rem;border-radius:6px;background:rgba(129,140,248,.07);color:var(--accent-bright);font-size:.7rem;font-weight:700;margin-bottom:.45rem}
+.tl-item h3{font-size:1rem;font-weight:700;margin-bottom:.1rem}
+.tl-role{color:var(--cyan);font-size:.8rem;font-weight:600;margin-bottom:.4rem}
+.tl-desc{color:var(--text-muted);font-size:.78rem;line-height:1.8}
+.tl-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.6rem}
+.tag{padding:.18rem .55rem;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(129,140,248,.06);color:var(--accent-bright);border:1px solid rgba(129,140,248,.1);transition:all .2s}
+.tag:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.25)}
+.tl-note{color:var(--text-dim);font-size:.75rem;font-style:italic;margin-top:2rem;padding-left:.5rem;border-left:2px solid var(--border)}
+
+/* ══════ PR ══════ */
+.pr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.pr-card{padding:1.8rem 1.8rem 1.8rem 2rem;border-left:3px solid transparent}
+.pr-card.pr-1{border-left-color:var(--accent)}
+.pr-card.pr-2{border-left-color:var(--cyan)}
+.pr-card.pr-3{border-left-color:var(--pink)}
+.pr-card.pr-4{border-left-color:var(--green)}
+.pr-card h3{font-size:.9rem;font-weight:700;margin-bottom:.5rem}
+.pr-card p{color:var(--text-muted);font-size:.78rem;line-height:1.85}
+
+/* ══════ Q&A ══════ */
+.qa-grid{display:flex;flex-direction:column;gap:.8rem}
+.qa-card{padding:1.5rem 1.8rem;cursor:pointer}
+.qa-card:hover{transform:translateY(-2px)}
+.qa-q{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.qa-q h3{font-size:.88rem;font-weight:700;color:var(--text)}
+.qa-arrow{width:20px;height:20px;position:relative;flex-shrink:0;transition:transform .3s}
+.qa-arrow::before,.qa-arrow::after{content:'';position:absolute;top:50%;width:8px;height:1.5px;background:var(--accent);border-radius:1px;transition:transform .3s}
+.qa-arrow::before{right:50%;transform:translateY(-50%) rotate(40deg);transform-origin:right center}
+.qa-arrow::after{left:50%;transform:translateY(-50%) rotate(-40deg);transform-origin:left center}
+.qa-card.open .qa-arrow{transform:rotate(180deg)}
+.qa-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1),margin .3s,opacity .3s;opacity:0}
+.qa-card.open .qa-a{max-height:300px;margin-top:1rem;opacity:1}
+.qa-a p{color:var(--text-muted);font-size:.82rem;line-height:1.85}
+
+/* ══════ CONTACT ══════ */
+.contact-section{text-align:center;padding:5rem 2rem;position:relative;background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(129,140,248,.06),transparent)}
+.contact-cta{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
+.contact-sub{color:var(--text-muted);font-size:.9rem;margin-bottom:2rem}
+.contact-cards{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.contact-card{display:inline-flex;align-items:center;gap:.7rem;padding:.9rem 1.6rem;border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:.85rem;font-weight:600;transition:all .3s;backdrop-filter:blur(12px)}
+.contact-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--card-glow)}
+.contact-card .c-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.contact-card .c-dot.c-mail{background:var(--accent)}
+.contact-card .c-dot.c-dl{background:var(--cyan)}
+#scroll-top{position:fixed;bottom:2rem;right:2rem;z-index:90;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(99,102,241,.3);opacity:0;visibility:hidden;transform:translateY(10px);transition:all .3s;font-size:0}
+#scroll-top::before,#scroll-top::after{content:'';position:absolute;width:10px;height:2px;background:#fff;border-radius:1px}
+#scroll-top::before{transform:rotate(-40deg);left:calc(50% - 8px)}
+#scroll-top::after{transform:rotate(40deg);right:calc(50% - 8px)}
+#scroll-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+#scroll-top:hover{transform:translateY(-3px)}
+footer{text-align:center;padding:2rem;color:var(--text-dim);font-size:.7rem;font-weight:500;border-top:1px solid var(--border)}
+
+/* ══════ ANIMATIONS ══════ */
+.reveal{opacity:0;transform:translateY(25px);transition:all .7s cubic-bezier(.16,1,.3,1)}.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-25px);transition:all .7s cubic-bezier(.16,1,.3,1)}.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(25px);transition:all .7s cubic-bezier(.16,1,.3,1)}.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(.96);transition:all .7s cubic-bezier(.16,1,.3,1)}.reveal-scale.visible{opacity:1;transform:scale(1)}
+.s1{transition-delay:.08s}.s2{transition-delay:.16s}.s3{transition-delay:.24s}.s4{transition-delay:.32s}
+
+@media(max-width:900px){.skills-layout,.pr-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){nav .links a.hm{display:none}.hero{padding:5rem 1.5rem 3rem}section{padding:3.5rem 1.5rem}.stat{padding:1.2rem .8rem}.stat-num{font-size:2rem}.timeline{padding-left:2rem}.tl-item{padding-left:1rem}.tl-dot{left:-2rem;width:18px;height:18px}.radar-wrap{width:240px;height:240px}.hero-buttons,.contact-cards{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+<div id="loader"><div class="loader-ring"></div></div>
+<div id="scroll-progress"></div>
+
+<nav><div class="inner">
+  <div class="logo">Y<span>.</span>Hikawa</div>
+  <div class="links">
+    <a href="#skills" class="hm nav-link" data-section="skills" data-ja="スキル" data-en="Skills">スキル</a>
+    <a href="#career" class="hm nav-link" data-section="career" data-ja="経歴" data-en="Career">経歴</a>
+    <a href="#about" class="hm nav-link" data-section="about" data-ja="自己PR" data-en="About">自己PR</a>
+    <a href="#faq" class="hm nav-link" data-section="faq" data-ja="Q&A" data-en="Q&A">Q&A</a>
+    <a href="#contact" class="nav-link" data-section="contact" data-ja="連絡先" data-en="Contact">連絡先</a>
+    <div class="nav-controls">
+      <button class="nav-btn theme-toggle" onclick="toggleTheme()"><span id="theme-icon">Dark</span></button>
+      <button class="nav-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
+    </div>
+  </div>
+</div></nav>
+
+<section class="hero" id="hero">
+  <div class="hero-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+  <div class="hero-content reveal">
+    <div class="hero-badge"><span class="dot"></span><span data-ja="技術顧問 / CTO / 業務委託 対応可" data-en="Available for Tech Advisory / CTO / Contract">技術顧問 / CTO / 業務委託 対応可</span></div>
+    <h1><span class="name" data-ja="樋川 裕次郎" data-en="Yujiro Hikawa">樋川 裕次郎</span><span class="role-line"><span class="typed-text" id="typed"></span><span class="typed-cursor"></span></span></h1>
+    <p class="hero-desc" data-ja="Flutter / React / Go を軸に、フロント・バックエンド・インフラまで一人で完結。AI領域ではエージェント・RAG・オーケストレーション構築の実務経験を持ち、企業向けAI導入支援・技術顧問としても活動中。" data-en="Full-stack engineer covering frontend, backend, and infrastructure single-handedly with Flutter, React, and Go. Experienced in AI agent, RAG, and orchestration development, active as a technical advisor for enterprise AI adoption.">Flutter / React / Go を軸に、フロント・バックエンド・インフラまで一人で完結。AI領域ではエージェント・RAG・オーケストレーション構築の実務経験を持ち、企業向けAI導入支援・技術顧問としても活動中。</p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn btn-glow" data-ja="連絡する" data-en="Get in Touch">連絡する</a>
+      <a href="#career" class="btn btn-glass" data-ja="経歴を見る" data-en="View Career">経歴を見る</a>
+      <a href="resume_hiakwa.docx" download class="btn btn-glass btn-dl"><span data-ja="履歴書をDL" data-en="Resume">履歴書をDL</span></a>
+    </div>
+  </div>
+</section>
+
+<div class="stats-section"><div class="stats-row reveal-scale">
+  <div class="stat"><div class="stat-num"><span class="counter" data-target="5">0</span><span class="unit">+</span></div><div class="stat-label" data-ja="年の開発経験" data-en="Years of Experience">年の開発経験</div></div>
+  <div class="stat"><div class="stat-num"><span class="counter" data-target="14">0</span><span class="unit">+</span></div><div class="stat-label" data-ja="社以上の開発実績" data-en="Companies Served">社以上の開発実績</div></div>
+  <div class="stat"><div class="stat-num"><span class="counter" data-target="10">0</span><span class="unit">K+</span></div><div class="stat-label" data-ja="ユーザー規模の運用" data-en="Users Served">ユーザー規模の運用</div></div>
+  <div class="stat"><div class="stat-num"><span class="counter" data-target="3">0</span></div><div class="stat-label" data-ja="プラットフォーム同時開発" data-en="Platforms in Parallel">プラットフォーム同時開発</div></div>
+</div></div>
+
+<section id="skills">
+  <div class="reveal"><div class="section-label" data-ja="スキル" data-en="SKILLS">スキル</div><h2 class="section-title" data-ja="活かせる経験・技術" data-en="Expertise & Stack">活かせる経験・技術</h2><p class="section-desc" data-ja="フルスタック開発からAI・インフラ・マネジメントまで。" data-en="Full-stack development, AI, infrastructure, and management.">フルスタック開発からAI・インフラ・マネジメントまで。</p></div>
+  <div class="skills-layout">
+    <div class="skill-cards">
+      <div class="glass skill-card sk-tech reveal-left s1"><h3 data-ja="技術" data-en="Engineering"><span class="sk-label"></span>技術</h3><p data-ja="Flutter（エキスパート）/ React / TypeScript / Next.js / Go / Node.js / Kotlin / Swift。3プラットフォーム同時開発実績。0→1の立ち上げ多数。TDD・設計パターン・パフォーマンス最適化。" data-en="Flutter (Expert) / React / TS / Next.js / Go / Node.js / Kotlin / Swift. 3-platform parallel dev. Multiple 0-to-1 launches. TDD & performance tuning.">Flutter（エキスパート）/ React / TypeScript / Next.js / Go / Node.js / Kotlin / Swift。3プラットフォーム同時開発実績。0→1の立ち上げ多数。TDD・設計パターン・パフォーマンス最適化。</p></div>
+      <div class="glass skill-card sk-infra reveal-left s2"><h3 data-ja="インフラ・DevOps" data-en="Infra & DevOps"><span class="sk-label"></span>インフラ・DevOps</h3><p data-ja="VPS / Nginx / SSL / Docker / LBを全て自前構築・運用。CI/CD（GitHub Actions / Bitrise / Codemagic）。監視・セキュリティ設計。" data-en="Self-built VPS / Nginx / SSL / Docker / LB. CI/CD with GitHub Actions, Bitrise, Codemagic. Security & monitoring.">VPS / Nginx / SSL / Docker / LBを全て自前構築・運用。CI/CD（GitHub Actions / Bitrise / Codemagic）。監視・セキュリティ設計。</p></div>
+      <div class="glass skill-card sk-ai reveal-left s3"><h3><span class="sk-label"></span>AI</h3><p data-ja="エージェント / RAG / オーケストレーション構築（実務導入済）。ファインチューニング・CLIツール開発。企業向けAI導入コンサル。" data-en="Agent / RAG / orchestration (production). Fine-tuning & CLI tools. Enterprise AI consulting.">エージェント / RAG / オーケストレーション構築（実務導入済）。ファインチューニング・CLIツール開発。企業向けAI導入コンサル。</p></div>
+      <div class="glass skill-card sk-mgmt reveal-left s4"><h3 data-ja="マネジメント" data-en="Management"><span class="sk-label"></span>マネジメント</h3><p data-ja="PM（要件定義〜リリース）/ チーム統括 / 採用・教育。クライアント折衝・ビジネス英語。" data-en="PM (requirements to release) / team lead / hiring & training. Business English.">PM（要件定義〜リリース）/ チーム統括 / 採用・教育。クライアント折衝・ビジネス英語。</p></div>
+    </div>
+    <div class="chart-container reveal-right">
+      <h3 data-ja="スキルマップ" data-en="Skill Map">スキルマップ</h3>
+      <div class="radar-wrap"><svg class="radar-svg" viewBox="0 0 300 300" id="radarChart"></svg></div>
+      <div class="tech-bars" id="techBars">
+        <div class="tech-bar-item"><div class="tech-bar-label"><span class="tech-bar-name">Flutter / Dart</span><span class="tech-bar-pct">95%</span></div><div class="tech-bar-track"><div class="tech-bar-fill" data-width="95" style="background:linear-gradient(90deg,var(--accent),var(--cyan))"></div></div></div>
+        <div class="tech-bar-item"><div class="tech-bar-label"><span class="tech-bar-name">React / TypeScript</span><span class="tech-bar-pct">88%</span></div><div class="tech-bar-track"><div class="tech-bar-fill" data-width="88" style="background:linear-gradient(90deg,var(--accent),var(--pink))"></div></div></div>
+        <div class="tech-bar-item"><div class="tech-bar-label"><span class="tech-bar-name">Go / Node.js</span><span class="tech-bar-pct">85%</span></div><div class="tech-bar-track"><div class="tech-bar-fill" data-width="85" style="background:linear-gradient(90deg,var(--cyan),var(--green))"></div></div></div>
+        <div class="tech-bar-item"><div class="tech-bar-label"><span class="tech-bar-name">Infra / DevOps</span><span class="tech-bar-pct">82%</span></div><div class="tech-bar-track"><div class="tech-bar-fill" data-width="82" style="background:linear-gradient(90deg,var(--green),var(--yellow))"></div></div></div>
+        <div class="tech-bar-item"><div class="tech-bar-label"><span class="tech-bar-name">AI / ML</span><span class="tech-bar-pct">80%</span></div><div class="tech-bar-track"><div class="tech-bar-fill" data-width="80" style="background:linear-gradient(90deg,var(--pink),var(--orange))"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="career">
+  <div class="reveal"><div class="section-label" data-ja="経歴" data-en="CAREER">経歴</div><h2 class="section-title" data-ja="職務経歴" data-en="Work History">職務経歴</h2><p class="section-desc" data-ja="主要プロジェクトを抜粋。" data-en="Selected key projects.">主要プロジェクトを抜粋。</p></div>
+  <div class="timeline">
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-period">2025.12 — 2026.03</div><h3 data-ja="カスタマークラウド株式会社" data-en="Customer Cloud Inc.">カスタマークラウド株式会社</h3><div class="tl-role" data-ja="業務委託 / AIコンサルタント" data-en="Contract / AI Consultant">業務委託 / AIコンサルタント</div><p class="tl-desc" data-ja="AI活用指導、AIコーディングシステムの設計・開発支援、アプリ開発業務支援。エンジニア向けAI研修でチーム全体の生産性向上に貢献。" data-en="AI adoption guidance, AI coding system design & dev support. Boosted team productivity through engineer AI training.">AI活用指導、AIコーディングシステムの設計・開発支援、アプリ開発業務支援。エンジニア向けAI研修でチーム全体の生産性向上に貢献。</p><div class="tl-tags"><span class="tag">AI Consulting</span><span class="tag">LLM</span><span class="tag">Flutter</span><span class="tag">Next.js</span></div></div>
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-period">2025.09 — 2026.03</div><h3 data-ja="株式会社Aitane" data-en="Aitane Inc.">株式会社Aitane</h3><div class="tl-role" data-ja="業務委託 / フルスタックエンジニア・PM" data-en="Contract / Full-stack Engineer & PM">業務委託 / フルスタックエンジニア・PM</div><p class="tl-desc" data-ja="AIフィットネスアプリの0→1立ち上げ。AIチャット・音声システム・データ連携の設計・実装、フロントエンド全体のアーキテクチャ設計、PM業を兼務。" data-en="Built AI fitness app from zero. AI chat, voice systems, data integrations. Led frontend architecture & PM duties.">AIフィットネスアプリの0→1立ち上げ。AIチャット・音声システム・データ連携の設計・実装、フロントエンド全体のアーキテクチャ設計、PM業を兼務。</p><div class="tl-tags"><span class="tag">Flutter</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">OpenAI</span><span class="tag">PM</span></div></div>
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-period">2023.08 — 2026.03</div><h3>Leanbody</h3><div class="tl-role" data-ja="フリーランス / フルスタックエンジニア" data-en="Freelance / Full-stack Engineer">フリーランス / フルスタックエンジニア</div><p class="tl-desc" data-ja="フィットネスアプリのAndroid TV開発・WEB新機能開発。AndroidTVアプリを一人でゼロから開発しリリース。Androidアプリの立ち上げも単独で担当。" data-en="Built Android TV app solo from scratch to release. Also led Android app launch and web feature development for fitness platform.">フィットネスアプリのAndroid TV開発・WEB新機能開発。AndroidTVアプリを一人でゼロから開発しリリース。Androidアプリの立ち上げも単独で担当。</p><div class="tl-tags"><span class="tag">Kotlin</span><span class="tag">Flutter</span><span class="tag">React</span><span class="tag">Go</span><span class="tag">AWS</span></div></div>
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-period">2023.05 — 2024.09</div><h3 data-ja="早稲田大学" data-en="Waseda University">早稲田大学</h3><div class="tl-role" data-ja="研究補助員 / リーダー" data-en="Research Assistant / Leader">研究補助員 / リーダー</div><p class="tl-desc" data-ja="研究室のIoTプロダクト開発支援・ディレクション。要件定義・設計からマネジメント・プログラミング指導まで担当。" data-en="IoT product development & direction for research lab. Requirements, design, management, and coding mentorship.">研究室のIoTプロダクト開発支援・ディレクション。要件定義・設計からマネジメント・プログラミング指導まで担当。</p><div class="tl-tags"><span class="tag">React</span><span class="tag">Python</span><span class="tag">Firebase</span><span class="tag">IoT</span></div></div>
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-period">2022.05 — 2023.04</div><h3 data-ja="オメガ株式会社" data-en="Omega Inc.">オメガ株式会社</h3><div class="tl-role" data-ja="正社員 / リーダー" data-en="Full-time / Leader">正社員 / リーダー</div><p class="tl-desc" data-ja="広告系キーボードアプリの保守・運用・機能開発。採用・教育、他部署の業務改善ツール開発。ユーザー継続率10%向上に貢献。オフショア開発マネジメントも兼務。" data-en="Ad-tech keyboard app maintenance & feature dev. Hiring, training, internal tooling. Improved retention by 10%. Managed offshore dev.">広告系キーボードアプリの保守・運用・機能開発。採用・教育、他部署の業務改善ツール開発。ユーザー継続率10%向上に貢献。オフショア開発マネジメントも兼務。</p><div class="tl-tags"><span class="tag">Swift</span><span class="tag">Kotlin</span><span class="tag">Go</span><span class="tag">Flutter</span><span class="tag">React</span><span class="tag">AWS</span></div></div>
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-period">2021.05 — 2022.10</div><h3 data-ja="受託開発・フリーランス" data-en="Freelance & Contract">受託開発・フリーランス</h3><div class="tl-role" data-ja="フルスタックエンジニア" data-en="Full-stack Engineer">フルスタックエンジニア</div><p class="tl-desc" data-ja="自動車業界・教育業界・法律業界・WEB3等のアプリ開発に従事。顧客ヒアリングから設計・開発・リリースまで一貫して担当。複数の0→1立ち上げを経験。" data-en="App development across automotive, education, legal, and Web3. End-to-end from client hearings to release. Multiple 0-to-1 launches.">自動車業界・教育業界・法律業界・WEB3等のアプリ開発に従事。顧客ヒアリングから設計・開発・リリースまで一貫して担当。複数の0→1立ち上げを経験。</p><div class="tl-tags"><span class="tag">Flutter</span><span class="tag">React</span><span class="tag">Next.js</span><span class="tag">AWS</span><span class="tag">WEB3</span></div></div>
+    <p class="tl-note reveal" data-ja="※ 他にもK.S.ロジャーズ、Nowall、WizOnChain、受託開発会社等での業務経験あり。詳細は履歴書をご参照ください。" data-en="* Additional experience at K.S. Rogers, Nowall, WizOnChain, and others. See resume for details.">※ 他にもK.S.ロジャーズ、Nowall、WizOnChain、受託開発会社等での業務経験あり。詳細は履歴書をご参照ください。</p>
+  </div>
+</section>
+
+<section id="about">
+  <div class="reveal"><div class="section-label" data-ja="自己PR" data-en="ABOUT">自己PR</div><h2 class="section-title" data-ja="強み" data-en="Strengths">強み</h2><p class="section-desc" data-ja="即戦力として貢献できるポイント。" data-en="What I bring to the table.">即戦力として貢献できるポイント。</p></div>
+  <div class="pr-grid">
+    <div class="glass pr-card pr-1 reveal s1"><h3 data-ja="0→1の立ち上げ力" data-en="Zero-to-One Builder">0→1の立ち上げ力</h3><p data-ja="要件定義からインフラ構築・リリースまで一人で完結できるフルスタック力。複数のプロダクト立ち上げを経験し、不確実性の高い初期フェーズに強い。" data-en="Full-stack capability from requirements to infra to release, solo. Multiple product launches with strength in high-uncertainty early phases.">要件定義からインフラ構築・リリースまで一人で完結できるフルスタック力。複数のプロダクト立ち上げを経験し、不確実性の高い初期フェーズに強い。</p></div>
+    <div class="glass pr-card pr-2 reveal s2"><h3 data-ja="技術の幅広さと深さ" data-en="Breadth & Depth">技術の幅広さと深さ</h3><p data-ja="フロントエンド・バックエンド・モバイル・インフラ・AIの全レイヤーをカバー。TDDで品質を担保しつつ、パフォーマンス最適化まで対応。" data-en="Covering every layer — frontend, backend, mobile, infra, AI. Quality through TDD with performance optimization.">フロントエンド・バックエンド・モバイル・インフラ・AIの全レイヤーをカバー。TDDで品質を担保しつつ、パフォーマンス最適化まで対応。</p></div>
+    <div class="glass pr-card pr-3 reveal s3"><h3 data-ja="AI実務力" data-en="Practical AI">AI実務力</h3><p data-ja="エージェント・RAG・オーケストレーション構築の実績あり。企業へのAIコーディングシステム設計・導入支援を実施。理論ではなく実務でAIを活用。" data-en="Proven AI agent, RAG, orchestration dev. Enterprise AI coding system design & consulting.">エージェント・RAG・オーケストレーション構築の実績あり。企業へのAIコーディングシステム設計・導入支援を実施。理論ではなく実務でAIを活用。</p></div>
+    <div class="glass pr-card pr-4 reveal s4"><h3 data-ja="リーダーシップ" data-en="Leadership">リーダーシップ</h3><p data-ja="チームマネジメント・採用・教育・オフショア開発管理の経験あり。技術と事業の両面から組織に貢献可能。" data-en="Team management, hiring, mentoring, offshore dev management. Tech and business contributions.">チームマネジメント・採用・教育・オフショア開発管理の経験あり。技術と事業の両面から組織に貢献可能。</p></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="reveal"><div class="section-label">Q&A</div><h2 class="section-title" data-ja="よくある質問" data-en="Frequently Asked">よくある質問</h2><p class="section-desc" data-ja="ご依頼前に気になるポイント。" data-en="Common questions before engagement.">ご依頼前に気になるポイント。</p></div>
+  <div class="qa-grid">
+    <div class="glass qa-card reveal s1" onclick="this.classList.toggle('open')"><div class="qa-q"><h3 data-ja="稼働形態は？リモート対応可能？" data-en="Work arrangement? Remote OK?">稼働形態は？リモート対応可能？</h3><span class="qa-arrow"></span></div><div class="qa-a"><p data-ja="フルリモート対応可能です。業務委託・技術顧問・CTO等、柔軟に対応します。週次の定例MTGやSlack等でのコミュニケーションを推奨しています。" data-en="Fully remote capable. Flexible with contract, advisory, and CTO roles. Weekly syncs and Slack recommended.">フルリモート対応可能です。業務委託・技術顧問・CTO等、柔軟に対応します。週次の定例MTGやSlack等でのコミュニケーションを推奨しています。</p></div></div>
+    <div class="glass qa-card reveal s2" onclick="this.classList.toggle('open')"><div class="qa-q"><h3 data-ja="得意な技術スタックは？" data-en="What's your core stack?">得意な技術スタックは？</h3><span class="qa-arrow"></span></div><div class="qa-a"><p data-ja="Flutterを中心に、React / TypeScript / Next.js / Go / Node.jsでフルスタック対応可能です。インフラもVPS・Docker・CI/CDまで自前構築の実績があります。技術選定から相談可能です。" data-en="Flutter-centric, with React / TS / Next.js / Go / Node.js full-stack capability. Self-built infra including VPS, Docker, and CI/CD. Happy to consult on tech selection.">Flutterを中心に、React / TypeScript / Next.js / Go / Node.jsでフルスタック対応可能です。インフラもVPS・Docker・CI/CDまで自前構築の実績があります。技術選定から相談可能です。</p></div></div>
+    <div class="glass qa-card reveal s3" onclick="this.classList.toggle('open')"><div class="qa-q"><h3 data-ja="AI導入支援はどんなことができる？" data-en="What AI consulting do you offer?">AI導入支援はどんなことができる？</h3><span class="qa-arrow"></span></div><div class="qa-a"><p data-ja="AIエージェント・RAG・オーケストレーションの設計・構築、AIコーディングシステムの導入、エンジニアチームへのAI活用研修、技術選定・アーキテクチャ提案まで対応可能です。実際にカスタマークラウド社でチーム生産性向上を実現しました。" data-en="AI agent/RAG/orchestration design & build, AI coding system implementation, team training, and tech recommendations. Successfully improved productivity at Customer Cloud Inc.">AIエージェント・RAG・オーケストレーションの設計・構築、AIコーディングシステムの導入、エンジニアチームへのAI活用研修、技術選定・アーキテクチャ提案まで対応可能です。実際にカスタマークラウド社でチーム生産性向上を実現しました。</p></div></div>
+    <div class="glass qa-card reveal s4" onclick="this.classList.toggle('open')"><div class="qa-q"><h3 data-ja="チームへの参画も可能？" data-en="Can you join an existing team?">チームへの参画も可能？</h3><span class="qa-arrow"></span></div><div class="qa-a"><p data-ja="もちろん可能です。技術リード・PM・メンバーとしての参画実績があります。オフショア開発チームのマネジメント経験もあり、チームの規模や構成に柔軟に対応できます。" data-en="Absolutely. Experienced as tech lead, PM, or member. Also managed offshore teams. Flexible with any team size.">もちろん可能です。技術リード・PM・メンバーとしての参画実績があります。オフショア開発チームのマネジメント経験もあり、チームの規模や構成に柔軟に対応できます。</p></div></div>
+    <div class="glass qa-card reveal" onclick="this.classList.toggle('open')"><div class="qa-q"><h3 data-ja="英語でのコミュニケーションは？" data-en="Can you work in English?">英語でのコミュニケーションは？</h3><span class="qa-arrow"></span></div><div class="qa-a"><p data-ja="ビジネスレベルの英語対応が可能です。英語でのドキュメント作成、MTG、クライアント折衝の経験があります。" data-en="Business-level English. Experienced in English docs, meetings, and client negotiations.">ビジネスレベルの英語対応が可能です。英語でのドキュメント作成、MTG、クライアント折衝の経験があります。</p></div></div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <div class="reveal">
+    <h2 class="contact-cta" data-ja="お仕事のご相談" data-en="Let's Work Together">お仕事のご相談</h2>
+    <p class="contact-sub" data-ja="技術顧問・CTO・業務委託のご相談はお気軽にどうぞ。" data-en="Open to tech advisory, CTO, and contract opportunities.">技術顧問・CTO・業務委託のご相談はお気軽にどうぞ。</p>
+    <div class="contact-cards">
+      <a href="mailto:dev.mobile.yh.ch@gmail.com" class="contact-card"><span class="c-dot c-mail"></span>dev.mobile.yh.ch@gmail.com</a>
+      <a href="resume_hiakwa.docx" download class="contact-card"><span class="c-dot c-dl"></span><span data-ja="職務経歴書をダウンロード" data-en="Download Resume">職務経歴書をダウンロード</span></a>
+    </div>
+  </div>
+</section>
+
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"></button>
+<footer><p>&copy; 2026 Yujiro Hikawa</p></footer>
+
+<script>
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('loader').classList.add('hide'),500)});
+let theme='dark';function toggleTheme(){theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;document.getElementById('theme-icon').textContent=theme==='dark'?'Dark':'Light'}
+let lang='ja';function toggleLang(){lang=lang==='ja'?'en':'ja';document.getElementById('lang-toggle').textContent=lang==='ja'?'EN':'JA';document.documentElement.lang=lang;document.querySelectorAll('[data-ja][data-en]').forEach(el=>{el.textContent=el.getAttribute('data-'+lang)});document.querySelectorAll('.radar-label').forEach(el=>{el.textContent=el.dataset[lang]});startTyping()}
+const prog=document.getElementById('scroll-progress'),stb=document.getElementById('scroll-top');
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;prog.style.width=(window.scrollY/h)*100+'%';stb.classList.toggle('show',window.scrollY>400)});
+const secs=document.querySelectorAll('section[id]'),nls=document.querySelectorAll('.nav-link');
+const navObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){nls.forEach(l=>l.classList.remove('active'));const l=document.querySelector(`.nav-link[data-section="${e.target.id}"]`);if(l)l.classList.add('active')}})},{threshold:.2,rootMargin:'-64px 0px -40% 0px'});secs.forEach(s=>navObs.observe(s));
+const rObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>rObs.observe(el));
+function animC(){document.querySelectorAll('.counter').forEach(el=>{const t=+el.dataset.target,d=1100,s=performance.now();(function u(n){const p=Math.min((n-s)/d,1);el.textContent=Math.round(t*(1-Math.pow(1-p,4)));if(p<1)requestAnimationFrame(u)})(s)})}
+const cO=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){animC();cO.disconnect()}})},{threshold:.5});document.querySelector('.stats-row')&&cO.observe(document.querySelector('.stats-row'));
+const bO=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.querySelectorAll('.tech-bar-fill').forEach((b,i)=>{setTimeout(()=>{b.style.width=b.dataset.width+'%'},i*120)});bO.unobserve(en.target)}})},{threshold:.3});document.getElementById('techBars')&&bO.observe(document.getElementById('techBars'));
+const tEl=document.getElementById('typed');const phrases={ja:['Fullstack Engineer','AI Consultant','Tech Advisor','Team Leader'],en:['Fullstack Engineer','AI Consultant','Tech Advisor','Team Leader']};let pI=0,cI=0,del=false,tT;
+function tS(){const l=phrases[lang],c=l[pI%l.length];if(!del){tEl.textContent=c.substring(0,cI+1);cI++;if(cI===c.length){tT=setTimeout(()=>{del=true;tS()},2200);return}tT=setTimeout(tS,65)}else{tEl.textContent=c.substring(0,cI-1);cI--;if(cI===0){del=false;pI++;tT=setTimeout(tS,350);return}tT=setTimeout(tS,35)}}
+function startTyping(){clearTimeout(tT);pI=0;cI=0;del=false;tEl.textContent='';tS()}startTyping();
+(function(){const svg=document.getElementById('radarChart');if(!svg)return;const cx=150,cy=150,mR=110,ns='http://www.w3.org/2000/svg';const lb={ja:['Frontend','Backend','Mobile','Infra','AI','PM'],en:['Frontend','Backend','Mobile','Infra','AI','PM']};const v=[.95,.85,.92,.82,.80,.78],n=v.length;
+for(let r=1;r<=5;r++){const rd=mR*r/5;let pts=[];for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2;pts.push(`${cx+rd*Math.cos(a)},${cy+rd*Math.sin(a)}`)}const p=document.createElementNS(ns,'polygon');p.setAttribute('points',pts.join(' '));p.setAttribute('fill','none');p.setAttribute('stroke',r===5?'var(--border-hover)':'var(--border)');p.setAttribute('stroke-width',r===5?'1.2':'0.8');svg.appendChild(p)}
+for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2,l=document.createElementNS(ns,'line');l.setAttribute('x1',cx);l.setAttribute('y1',cy);l.setAttribute('x2',cx+mR*Math.cos(a));l.setAttribute('y2',cy+mR*Math.sin(a));l.setAttribute('stroke','var(--border)');l.setAttribute('stroke-width','0.8');svg.appendChild(l)}
+let dp=[];for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2;dp.push(`${cx+mR*v[i]*Math.cos(a)},${cy+mR*v[i]*Math.sin(a)}`)}
+const df=document.createElementNS(ns,'defs'),gr=document.createElementNS(ns,'linearGradient');gr.id='rg';gr.setAttribute('x1','0%');gr.setAttribute('y1','0%');gr.setAttribute('x2','100%');gr.setAttribute('y2','100%');['#818cf8','#22d3ee','#f472b6'].forEach((c,i)=>{const s=document.createElementNS(ns,'stop');s.setAttribute('offset',i*50+'%');s.setAttribute('stop-color',c);gr.appendChild(s)});df.appendChild(gr);svg.appendChild(df);
+const zp=Array(n).fill(`${cx},${cy}`).join(' ');const poly=document.createElementNS(ns,'polygon');poly.setAttribute('points',zp);poly.setAttribute('fill','url(#rg)');poly.setAttribute('fill-opacity','0.12');poly.setAttribute('stroke','url(#rg)');poly.setAttribute('stroke-width','2');poly.setAttribute('stroke-linejoin','round');svg.appendChild(poly);
+const dots=[];for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2,c=document.createElementNS(ns,'circle');c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r','4.5');c.setAttribute('fill','#818cf8');c.setAttribute('stroke','var(--bg)');c.setAttribute('stroke-width','2');c.dataset.tx=cx+mR*v[i]*Math.cos(a);c.dataset.ty=cy+mR*v[i]*Math.sin(a);svg.appendChild(c);dots.push(c)}
+for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2,t=document.createElementNS(ns,'text');t.setAttribute('x',cx+(mR+20)*Math.cos(a));t.setAttribute('y',cy+(mR+20)*Math.sin(a)+4);t.setAttribute('text-anchor','middle');t.setAttribute('fill','var(--text-muted)');t.setAttribute('font-size','10');t.setAttribute('font-weight','600');t.setAttribute('font-family','Inter,sans-serif');t.textContent=lb.ja[i];t.dataset.ja=lb.ja[i];t.dataset.en=lb.en[i];t.classList.add('radar-label');svg.appendChild(t)}
+new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){setTimeout(()=>{poly.style.transition='all 1.2s cubic-bezier(.16,1,.3,1)';poly.setAttribute('points',dp.join(' '));dots.forEach((d,i)=>{d.style.transition=`all 1.2s cubic-bezier(.16,1,.3,1) ${i*.08}s`;d.setAttribute('cx',d.dataset.tx);d.setAttribute('cy',d.dataset.ty)})},250)}})},{threshold:.3}).observe(svg.closest('.chart-container'))})();
+</script>
+</body>
+</html>
