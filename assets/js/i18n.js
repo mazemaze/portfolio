@@ -96,6 +96,8 @@ const I18N = {
     "contact.title": "Contact",
     "contact.line": "Let's build something.",
     "contact.text": "Open to full-remote engagements from September 2026 — from a single feature to a full product build.",
+    "contact.resume": "Skill Sheet (PDF)",
+    "meta.description": "Portfolio of Yujiro Hikawa — full-stack engineer, PM and tech lead. 0→1 products, apps used by tens of thousands.",
   },
 
   ja: {
@@ -191,6 +193,8 @@ const I18N = {
     "contact.title": "お問い合わせ",
     "contact.line": "一緒に作りましょう。",
     "contact.text": "2026年9月よりフルリモートで参画可能です。一機能からプロダクト全体の開発まで、お気軽にご相談ください。",
+    "contact.resume": "スキルシート (PDF)",
+    "meta.description": "ヒカワ ユウジロウのポートフォリオ — フルスタックエンジニア / PM / テックリード。0→1プロダクト、数万人規模のアプリ開発。",
   },
 };
 
@@ -207,7 +211,7 @@ const I18N = {
     return "ja";
   }
 
-  function apply(lang) {
+  function swap(lang) {
     const dict = I18N[lang];
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
@@ -218,11 +222,31 @@ const I18N = {
       lang === "ja"
         ? "ヒカワ ユウジロウ — フルスタックエンジニア"
         : "Yujiro Hikawa — Full-Stack Engineer";
+    const desc = dict["meta.description"];
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc && desc) metaDesc.setAttribute("content", desc);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", document.title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc && desc) ogDesc.setAttribute("content", desc);
     buttons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
     localStorage.setItem(STORAGE_KEY, lang);
   }
 
-  buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.lang)));
+  function apply(lang, instant) {
+    const main = document.querySelector("main");
+    if (instant || !main) {
+      swap(lang);
+      return;
+    }
+    main.classList.add("fading");
+    setTimeout(() => {
+      swap(lang);
+      main.classList.remove("fading");
+    }, 160);
+  }
 
-  apply(detect());
+  buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.lang, false)));
+
+  apply(detect(), true);
 })();

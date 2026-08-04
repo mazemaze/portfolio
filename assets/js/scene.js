@@ -4,6 +4,10 @@
    ============================================================ */
 
 import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 const canvas = document.getElementById("gl");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -30,6 +34,8 @@ function init(canvas) {
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
+  // Opaque page-colored background: bloom compositing replaces the alpha canvas
+  scene.background = new THREE.Color(0x0a0a0f);
   const camera = new THREE.PerspectiveCamera(
     50,
     window.innerWidth / window.innerHeight,
@@ -37,6 +43,18 @@ function init(canvas) {
     100
   );
   camera.position.set(0, 0, 5);
+
+  /* Bloom pipeline — subtle glow on the gold particles */
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    0.55,
+    0.7,
+    0.65
+  );
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
 
   const group = new THREE.Group();
   scene.add(group);
@@ -225,8 +243,10 @@ function init(canvas) {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
     const pr = Math.min(window.devicePixelRatio, 2);
     renderer.setPixelRatio(pr);
+    composer.setPixelRatio(pr);
     particleUniforms.uPixelRatio.value = pr;
   });
 
@@ -268,7 +288,7 @@ function init(canvas) {
     wireMat.opacity = 0.14 * Math.max(0, fade);
     wire2Mat.opacity = 0.05 * Math.max(0, fade);
 
-    renderer.render(scene, camera);
+    composer.render();
   }
 
   document.addEventListener("visibilitychange", () => {
