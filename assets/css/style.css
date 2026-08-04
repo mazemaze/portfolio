@@ -983,6 +983,10 @@ main.fading { opacity: 0; }
   transition: opacity 0.3s ease;
 }
 
+.mobile-menu[hidden] { display: none; }
+
+.mobile-menu:not(.open) { pointer-events: none; }
+
 .mobile-menu.open { opacity: 1; }
 
 .mobile-menu nav {
