@@ -194,7 +194,50 @@ body.skill-match .site-nav {
   background: var(--bg-soft);
 }
 
-/* ---------- Utility bar ---------- */
+/* ---------- Section quick-jump chips ---------- */
+
+.match-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.toc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+}
+
+.toc-chip:hover,
+.toc-chip:focus-visible {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+  background: rgba(211, 162, 79, 0.06);
+}
+
+.toc-num {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  transition: color 0.3s ease;
+}
+
+.toc-chip:hover .toc-num,
+.toc-chip:focus-visible .toc-num {
+  color: var(--accent);
+}
+
+/* ---------- Utility bar (sticky below the fixed header) ---------- */
 
 .match-utility {
   display: flex;
@@ -203,8 +246,15 @@ body.skill-match .site-nav {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
-  padding-bottom: 24px;
+  padding: 16px 0 24px;
   border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 72px;
+  z-index: 5;
+  background: rgba(10, 10, 15, 0.85);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .filter-wrap {
@@ -269,6 +319,10 @@ body.skill-match .site-nav {
 
 .match-section {
   margin-bottom: 72px;
+  /* Clears the fixed header + sticky utility bar when jumping in from the
+     .match-toc chips (html already carries scroll-padding-top: 96px from
+     style.css; this adds the delta for this page's taller sticky stack). */
+  scroll-margin-top: 150px;
 }
 
 .match-section:last-of-type {
@@ -400,6 +454,16 @@ body.skill-match .site-nav {
 }
 
 @media (max-width: 640px) {
+  .match-toc {
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .toc-chip {
+    padding: 5px 12px;
+    font-size: 0.72rem;
+  }
+
   .match-legend {
     padding: 16px 18px;
     gap: 14px 28px;
@@ -408,6 +472,21 @@ body.skill-match .site-nav {
   .match-utility {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  /* .filter-wrap's flex-basis: 260px (set for the desktop ROW layout, where
+     the main axis is horizontal) would otherwise be reinterpreted as a
+     vertical basis once .match-utility switches to flex-direction: column
+     here, ballooning the bar to ~260px tall with the input floating in
+     empty space. Reset to content-based sizing for the stacked layout. */
+  .filter-wrap {
+    flex: 1 1 auto;
+  }
+
+  .match-section {
+    /* Utility bar stacks to two rows (filter + full-width button) at this
+       breakpoint, so it needs a taller clearance offset. */
+    scroll-margin-top: 220px;
   }
 
   .copy-btn {
@@ -464,10 +543,169 @@ body.skill-match .site-nav {
   }
 }
 
-/* ---------- Reduced motion ---------- */
+/* ---------- Back-to-top button ---------- */
+
+.back-to-top {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(10, 10, 15, 0.7);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s var(--ease-out);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.back-to-top svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .back-to-top {
+    right: 18px;
+    bottom: 18px;
+    width: 40px;
+    height: 40px;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .match-table tbody tr {
     transition: none;
+  }
+
+  .back-to-top {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .back-to-top:hover,
+  .back-to-top:focus-visible {
+    transform: none;
+  }
+}
+
+/* ---------- Print ---------- */
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #111111;
+  }
+
+  .site-header,
+  .vignette,
+  .match-toc,
+  .match-utility,
+  .scroll-progress,
+  .back-to-top,
+  .match-closing-links {
+    display: none !important;
+  }
+
+  .match-container {
+    padding: 24px 0;
+    max-width: 100%;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .match-hero,
+  .match-legend,
+  .match-basic,
+  .match-section,
+  .match-closing {
+    margin-bottom: 32px;
+  }
+
+  .match-title,
+  .match-lead,
+  .match-kicker,
+  .match-subnote,
+  .basic-title {
+    color: #111111;
+  }
+
+  .match-legend {
+    border-color: #cccccc;
+    background: transparent;
+  }
+
+  .legend-item dd {
+    color: #333333;
+  }
+
+  .match-table,
+  .basic-table {
+    width: 100%;
+  }
+
+  .match-table td,
+  .match-table th,
+  .basic-table td,
+  .basic-table th {
+    border-bottom: 1px solid #cccccc;
+    color: #111111;
+  }
+
+  .match-table td.note,
+  .basic-table td:last-child {
+    color: #333333;
+  }
+
+  [data-mark="o"],
+  [data-mark="t"],
+  [data-mark="x"] {
+    color: #111111 !important;
+    opacity: 1 !important;
+  }
+
+  .match-table tbody tr,
+  .basic-table tbody tr {
+    break-inside: avoid;
+  }
+
+  .section-title,
+  .basic-title {
+    break-after: avoid;
+    color: #111111;
+  }
+
+  .match-closing p {
+    color: #333333;
+  }
+
+  a {
+    color: #111111;
+    text-decoration: underline;
   }
 }

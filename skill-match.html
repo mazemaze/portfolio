@@ -46,6 +46,7 @@
 </head>
 <body class="skill-match">
   <div class="vignette" aria-hidden="true"></div>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
   <header class="site-header" id="siteHeader">
     <a class="brand" href="index.html">Y.H.</a>
@@ -99,6 +100,20 @@
           </table>
         </div>
       </section>
+
+      <nav class="match-toc reveal" aria-label="セクション">
+        <a class="toc-chip" href="#s01"><span class="toc-num">01</span>経験・役割</a>
+        <a class="toc-chip" href="#s02"><span class="toc-num">02</span>言語</a>
+        <a class="toc-chip" href="#s03"><span class="toc-num">03</span>フロントエンド</a>
+        <a class="toc-chip" href="#s04"><span class="toc-num">04</span>バックエンド</a>
+        <a class="toc-chip" href="#s05"><span class="toc-num">05</span>モバイル</a>
+        <a class="toc-chip" href="#s06"><span class="toc-num">06</span>クラウド・インフラ</a>
+        <a class="toc-chip" href="#s07"><span class="toc-num">07</span>データベース</a>
+        <a class="toc-chip" href="#s08"><span class="toc-num">08</span>AI・LLM</a>
+        <a class="toc-chip" href="#s09"><span class="toc-num">09</span>業界・ドメイン</a>
+        <a class="toc-chip" href="#s10"><span class="toc-num">10</span>その他</a>
+        <a class="toc-chip" href="#s11"><span class="toc-num">11</span>条件面</a>
+      </nav>
 
       <div class="match-utility reveal">
         <div class="filter-wrap">
@@ -389,6 +404,10 @@
     </div>
   </main>
 
+  <button type="button" id="backToTop" class="back-to-top" aria-label="ページ上部へ">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
   <footer class="site-footer">
     <p>© <span id="year">2026</span> Yujiro Hikawa</p>
   </footer>
@@ -398,17 +417,41 @@
     (function () {
       'use strict';
 
-      /* ---------- Header scrolled state ---------- */
+      /* ---------- Header scrolled state / scroll progress / back-to-top ---------- */
       var header = document.getElementById('siteHeader');
+      var scrollProgressEl = document.getElementById('scrollProgress');
+      var backToTop = document.getElementById('backToTop');
       function onScroll() {
         if (window.scrollY > 24) {
           header.classList.add('scrolled');
         } else {
           header.classList.remove('scrolled');
         }
+
+        if (scrollProgressEl) {
+          var docEl = document.documentElement;
+          var scrollable = docEl.scrollHeight - docEl.clientHeight;
+          var pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+          scrollProgressEl.style.width = pct + '%';
+        }
+
+        if (backToTop) {
+          if (window.scrollY > 600) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        }
       }
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+
+      if (backToTop) {
+        backToTop.addEventListener('click', function () {
+          var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+        });
+      }
 
       /* ---------- Reveal handling ---------- */
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
