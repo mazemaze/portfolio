@@ -6,12 +6,14 @@ hero. Zero build step — plain HTML/CSS/JS, libraries loaded from pinned CDNs.
 ## Structure
 
 ```
-index.html            # all sections, data-i18n attributes
-assets/css/style.css  # dark cinematic theme
-assets/js/i18n.js     # JA/EN dictionary + language toggle
-assets/js/scene.js    # Three.js particle scene (ES module)
-assets/js/main.js     # scroll reveals, header, misc UI
-.nojekyll             # serve as plain static files on GitHub Pages
+index.html                 # all sections, data-i18n attributes
+skill-match.html           # ◯/△/× skill-match sheet for recruiting agents (JA-only, self-contained JS)
+assets/css/style.css       # dark cinematic theme
+assets/css/skill-match.css # skill-match page tables/FAQ styles
+assets/js/i18n.js          # JA/EN dictionary + language toggle
+assets/js/scene.js         # Three.js particle scene (ES module)
+assets/js/main.js          # scroll reveals, header, misc UI
+.nojekyll                  # serve as plain static files on GitHub Pages
 ```
 
 ## Local preview

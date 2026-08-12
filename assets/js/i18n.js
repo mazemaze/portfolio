@@ -97,6 +97,7 @@ const I18N = {
     "contact.line": "Let's build something.",
     "contact.text": "Open to full-remote engagements from September 2026 — from a single feature to a full product build.",
     "contact.resume": "Skill Sheet (PDF)",
+    "contact.matrix": "Skill Match Sheet (◯△×, Japanese)",
     "meta.description": "Portfolio of Yujiro Hikawa — full-stack engineer, PM and tech lead. 0→1 products, apps used by tens of thousands.",
   },
 
@@ -194,6 +195,7 @@ const I18N = {
     "contact.line": "一緒に作りましょう。",
     "contact.text": "2026年9月よりフルリモートで参画可能です。一機能からプロダクト全体の開発まで、お気軽にご相談ください。",
     "contact.resume": "スキルシート (PDF)",
+    "contact.matrix": "スキルマッチ早見表（◯△×）",
     "meta.description": "ヒカワ ユウジロウのポートフォリオ — フルスタックエンジニア / PM / テックリード。0→1プロダクト、数万人規模のアプリ開発。",
   },
 };

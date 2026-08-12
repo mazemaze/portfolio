@@ -4,4 +4,8 @@
     <loc>https://mazemaze.github.io/portfolio/</loc>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://mazemaze.github.io/portfolio/skill-match.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>

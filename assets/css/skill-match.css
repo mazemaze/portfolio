@@ -1,0 +1,473 @@
+/* ============================================================
+   Skill Match Sheet — page-specific styles
+   Extends style.css design system (dark cinematic, gold accent)
+   ============================================================ */
+
+:root {
+  --mark-partial: #b8a988;
+}
+
+/* ---------- Nav override (keep visible at mobile widths on this page) ---------- */
+
+body.skill-match .site-nav {
+  display: flex;
+  gap: clamp(12px, 3vw, 36px);
+}
+
+@media (max-width: 640px) {
+  body.skill-match .site-header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  body.skill-match .site-nav {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 4px;
+    max-width: 62vw;
+  }
+
+  body.skill-match .site-nav a {
+    font-size: 0.62rem;
+    letter-spacing: 0.03em;
+  }
+
+  body.skill-match .brand {
+    font-size: 1.1rem;
+  }
+}
+
+/* ---------- Page container ---------- */
+
+.match-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(110px, 16vh, 180px) clamp(20px, 5vw, 56px) clamp(80px, 10vh, 120px);
+}
+
+/* ---------- Hero ---------- */
+
+.match-hero {
+  max-width: 720px;
+  margin-bottom: 56px;
+}
+
+.match-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.match-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  word-break: keep-all;
+}
+
+.match-lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.1vw, 1.4rem);
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.match-subnote {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+.match-subnote a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-dim);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.match-subnote a:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+/* ---------- Legend ---------- */
+
+.match-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 40px;
+  margin-bottom: 56px;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.legend-item dt.mark {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1;
+  width: 1.2em;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.legend-item dd {
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Mark colors (shared: legend + table cells) ---------- */
+
+[data-mark="o"] { color: var(--accent); }
+[data-mark="t"] { color: var(--mark-partial); }
+[data-mark="x"] { color: var(--muted); opacity: 0.55; }
+
+/* ---------- Basic info ---------- */
+
+.match-basic {
+  margin-bottom: 48px;
+}
+
+.basic-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.basic-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.basic-table th,
+.basic-table td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.basic-table th {
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.basic-table th:first-child,
+.basic-table td:first-child {
+  width: 32%;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.basic-table td:last-child {
+  color: var(--muted);
+}
+
+.basic-table tbody tr:hover {
+  background: var(--bg-soft);
+}
+
+/* ---------- Utility bar ---------- */
+
+.match-utility {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.filter-wrap {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-input {
+  width: 100%;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 12px 16px 12px 40px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.filter-input::placeholder {
+  color: var(--muted);
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--accent-dim);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.copy-btn {
+  flex: 0 0 auto;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+  border: 1px solid var(--accent);
+}
+
+.match-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 40px 0;
+}
+
+.match-empty[hidden] {
+  display: none;
+}
+
+/* ---------- Sections ---------- */
+
+.match-section {
+  margin-bottom: 72px;
+}
+
+.match-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.match-section[hidden] {
+  display: none;
+}
+
+.match-section .section-title {
+  margin-bottom: 20px;
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+}
+
+.match-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.match-table thead th {
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 0.68rem;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--accent-dim);
+}
+
+.match-table th.col-item,
+.match-table td.item {
+  width: 52%;
+}
+
+.match-table th.col-mark,
+.match-table td.mark {
+  width: 14%;
+}
+
+.match-table th.col-note,
+.match-table td.note {
+  width: 34%;
+}
+
+.match-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.85rem;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.match-table td.item {
+  color: var(--text);
+}
+
+.match-table td.mark {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.match-table td.note {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.match-table tbody tr {
+  transition: background 0.25s ease;
+}
+
+.match-table tbody tr:hover {
+  background: var(--bg-soft);
+}
+
+.match-table tbody tr[hidden] {
+  display: none;
+}
+
+/* ---------- FAQ section (条件面のFAQ) — 2-column variant, no mark cell ---------- */
+
+.match-faq th.col-item,
+.match-faq td.item {
+  width: 38% !important;
+}
+
+.match-faq th.col-note,
+.match-faq td.note {
+  width: 62% !important;
+}
+
+.match-faq td.note {
+  color: var(--text);
+  opacity: 0.8;
+}
+
+/* ---------- Closing ---------- */
+
+.match-closing {
+  text-align: center;
+  padding-top: 24px;
+  margin-top: 72px;
+  border-top: 1px solid var(--line);
+}
+
+.match-closing p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 28px;
+}
+
+.match-closing-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 860px) {
+  .match-container {
+    padding-left: clamp(18px, 4vw, 40px);
+    padding-right: clamp(18px, 4vw, 40px);
+  }
+}
+
+@media (max-width: 640px) {
+  .match-legend {
+    padding: 16px 18px;
+    gap: 14px 28px;
+  }
+
+  .match-utility {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copy-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .match-table th.col-item,
+  .match-table td.item {
+    width: 46%;
+  }
+
+  .match-table th.col-mark,
+  .match-table td.mark {
+    width: 18%;
+  }
+
+  .match-table th.col-note,
+  .match-table td.note {
+    width: 36%;
+  }
+
+  .match-table td,
+  .match-table th {
+    padding: 10px 8px;
+    font-size: 0.78rem;
+  }
+
+  .match-table td.note {
+    font-size: 0.72rem;
+  }
+
+  .basic-table th,
+  .basic-table td {
+    padding: 10px 8px;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .match-table th.col-item,
+  .match-table td.item {
+    width: 44%;
+  }
+
+  .match-table th.col-mark,
+  .match-table td.mark {
+    width: 20%;
+  }
+
+  .match-table th.col-note,
+  .match-table td.note {
+    width: 36%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .match-table tbody tr {
+    transition: none;
+  }
+}
