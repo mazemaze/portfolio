@@ -1,6 +1,7 @@
-# Showreel ’26 — 15-second motion reel
+# Yujiro Hikawa — Showreel ’26 (15 s)
 
-A 15-second, 1920×1080 / 30 fps motion-design showreel built entirely in code:
+A 15-second, 1920×1080 / 30 fps résumé showreel for Yujiro Hikawa (Full-Stack Engineer ·
+PM · Tech Lead). All text comes from the portfolio site. It is built entirely in code:
 [HyperFrames](https://hyperframes.heygen.com) HTML + GSAP for picture, and a
 procedural Node synth for the soundtrack. No stock footage, samples, or
 plugins — every frame is a pure function of time, so renders are repeatable.
@@ -11,15 +12,15 @@ plugins — every frame is a pure function of time, so renders are repeatable.
 
 ## What’s in it
 
-| Time | Chapter | Technique on show |
-| --- | --- | --- |
-| 0–2 s | 01 Squash & stretch | Physics-driven bounce with squash/stretch, onion skins, arc trace, annotated principles; the ball launches into an iris |
-| 2–4 s | 02 Kinetic type | Letters drop on 16th notes and squash via the variable-font width axis (`wdth` 50–150), marquee, rotating badge; staggered-block wipe out |
-| 4–6 s | 03 Systems & rhythm | 48-cell Bauhaus grid: grid-staggered waves, shape morphs, ripple on the beat; zoom-through into one cell |
-| 6–8 s | 04 Depth & camera | CSS 3D tunnel of frames + 18-layer extruded type, axis gizmo; flies through the lens into an overexposure flash |
-| 8–10 s | 05 Generative | 4,200 seeded canvas particles burst, assemble into “ALIVE”, shockwave, whip-pan out |
-| 10–12 s | 06 Product UI | Micro-interactions: count-ups, chart draw, toggle, progress ring, cursor press + ripple; the click blooms into an iris |
-| 12–15 s | 07 Sign-off | The iris lands as the full stop after the name; end card and fade |
+| Time | Chapter | What it says | Technique |
+| --- | --- | --- | --- |
+| 0–2 s | 01 Full-cycle | “From zero to one.” The ball bounces through Requirements, Design, and Build & test, then launches | Physics-driven squash & stretch, onion skins, arc trace; the ball becomes an iris |
+| 2–4 s | 02 Profile | HIKAWA, full-stack engineer, Tokyo / full remote; the stack scrolls behind | Letters drop on 16th notes and squash on the variable-font width axis; block wipe |
+| 4–6 s | 03 Full stack | “Every layer.” The stack is shown as code (web, mobile, server, cloud, AI) | 48-cell grid: staggered waves, shape morphs, beat ripple; zoom-through |
+| 6–8 s | 04 Scale | 10K+ users; 5+ years, 15+ projects, 10+ industries; real project names on the tunnel frames | CSS 3D tunnel + extruded type; fly-through into a flash |
+| 8–10 s | 05 AI & frontier | AI, OpenAI / Claude API, Web3 | 4,200 seeded particles burst, assemble, shockwave, whip-pan |
+| 10–12 s | 06 Product | “Made to ship.” 10,000+ users, 15+ projects, available Sep 2026, Get in touch | UI micro-interactions: count-ups, chart, toggle, ring, cursor press + ripple |
+| 12–15 s | 07 Contact | Name, role, stack, portfolio and GitHub links | The click’s iris lands as the full stop after the name |
 
 The soundtrack (`audio/synth.mjs`) runs at 120 BPM, so every cut sits on a bar
 line (2, 4, 6, 8, 10, 12 s) and the ball’s three bounces land on beats
@@ -48,18 +49,19 @@ npm run audio    # re-synthesise the soundtrack
 npm run verify   # machine check of showreel.mp4: 1920x1080/30fps/450 frames/15 s, audio hits on the 2 s beat grid, HyperFrames gates
 ```
 
-### Put your own name on the end card
+### Change the end card
 
-The end card’s name and role are composition variables. Names up to about 7
-letters stay at full size (250 px); longer names shrink to a 130 px minimum and then wrap
-between words, which keeps the name larger than the role line. Only a single word too
-long for one line at 130 px shrinks further. Latin and
+The end card’s name, role and contact line are composition variables (defaults:
+`Yujiro Hikawa`, `Full-Stack Engineer · PM · Tech Lead`,
+`mazemaze.github.io/portfolio · github.com/mazemaze`). A name stays on one line at
+up to 250 px; multi-word names wrap between words, at up to 210 px, when that makes
+them clearly larger. A single word too long for the line shrinks to fit. Latin and
 Latin Extended letters use the brand font; other scripts (e.g. Japanese) fall back to
 the rendering machine’s system font.
 
 ```sh
 npx --yes hyperframes@0.8.77 render --quality high \
-  --variables '{"name":"Your Name","role":"Motion Designer"}' \
+  --variables '{"name":"Yujiro Hikawa","role":"Full-Stack Engineer","contact":"github.com/mazemaze"}' \
   --output renders/your-name.mp4
 ```
 
