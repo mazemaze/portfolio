@@ -82,7 +82,11 @@
           const el = entry.target;
           el.style.transitionDelay = `${Math.min(k++ * 80, 320)}ms`;
           el.classList.add("in");
-          el.addEventListener("transitionend", () => (el.style.transitionDelay = ""), { once: true });
+          el.addEventListener("transitionend", function clear(e) {
+            if (e.target !== el) return; // ignore transitions bubbling up from children
+            el.style.transitionDelay = "";
+            el.removeEventListener("transitionend", clear);
+          });
           el.querySelectorAll("[data-count]").forEach(count);
           io.unobserve(el);
         });
@@ -197,6 +201,10 @@
     mobileMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && menuBtn.getAttribute("aria-expanded") === "true") setMenu(false);
+    });
+    // A tablet rotated to the wide layout hides the menu button, so close the menu with it.
+    window.matchMedia("(min-width: 861px)").addEventListener("change", (e) => {
+      if (e.matches && menuBtn.getAttribute("aria-expanded") === "true") setMenu(false);
     });
   }
 
@@ -314,6 +322,8 @@
         label.textContent = dict["contact.copied"];
       } catch {
         label.textContent = dict["contact.copyFail"];
+        const address = btn.parentElement.querySelector(".mail-address");
+        if (address) window.getSelection().selectAllChildren(address); // ready for Cmd/Ctrl+C
       }
       setTimeout(() => {
         btn.classList.remove("copied");

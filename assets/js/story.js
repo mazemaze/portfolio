@@ -20,10 +20,10 @@ const SIGNAL = new THREE.Color(0xff4d1f);
 const PLACE_WIDE = [
   [1.55, 1.0, 0.0, 1.0], // hero: sphere beside the name
   [0.0, 2.15, -0.35, 0.75], // showreel: the screen frames the video
-  [2.9, 0.75, 0.9, 0.4], // about
+  [2.9, 0.75, 0.9, 0.4], // about (x is worked out in layout())
   [0.3, 1.0, 0.9, 0.9], // strengths: clusters above the cards
-  [3.3, 0.85, 0.3, 0.35], // skills: orbit rings in the right margin
-  [4.35, 0.95, 0.0, 0.4], // experience: spine along the right edge, off the tags
+  [3.3, 0.85, 0.3, 0.35], // skills: orbit rings in the right margin (x from layout())
+  [4.35, 0.95, 0.0, 0.4], // experience: spine along the right edge (x from layout())
   [3.1, 1.35, 0.35, 1.0], // contact: the dot, clear of the headline
 ];
 const PLACE_NARROW = [
@@ -37,6 +37,9 @@ const PLACE_NARROW = [
 ];
 // Flat formations (screen, radar-like) would turn edge-on while spinning; hold them still.
 const FLAT = [1];
+// Wide layouts: these formations live in the right-hand margin, worked out from the real layout.
+// Value = how far each reaches sideways at scale 1 while turning (world units).
+const MARGIN = { 2: 1.9, 4: 1.9, 5: 0.6 }; // about lattice, skills rings, experience spine
 
 function mulberry32(a) {
   return function () {
@@ -195,10 +198,9 @@ function start() {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
   const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
   renderer.setPixelRatio(dpr);
-  renderer.setSize(window.innerWidth, window.innerHeight, false);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 60);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 60);
   camera.position.set(0, 0, 8.5);
 
   const n = narrow() ? 3600 : 7200;
@@ -232,25 +234,31 @@ function start() {
   group.add(points);
   scene.add(group);
 
-  // scroll → formation index (0..6), measured from each section's position
-  let anchors = [];
+  // scroll → formation index (0..6), measured from each section's position. Each formation
+  // holds while its section fills the screen and morphs only in the hand-over to the next one,
+  // so a formation never drifts across the middle of a long section.
+  let spans = [];
   function measure() {
-    anchors = SECTIONS.map((id) => {
+    const vh = window.innerHeight;
+    spans = SECTIONS.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
       const r = el.getBoundingClientRect();
-      return r.top + window.scrollY + Math.min(r.height, window.innerHeight) * (id === "hero" ? 0.5 : 0.35);
+      const top = r.top + window.scrollY;
+      const settled = top + Math.min(r.height, vh) * (id === "hero" ? 0.5 : 0.35);
+      return [settled, Math.max(settled, top + r.height - vh * 0.25)];
     });
   }
   function target() {
     const y = window.scrollY + window.innerHeight * 0.5;
-    const a = anchors;
-    if (!a.length || a.some((v) => v == null)) return 0;
-    if (y <= a[0]) return 0;
-    for (let k = 0; k < a.length - 1; k++) {
-      if (y < a[k + 1]) return k + (y - a[k]) / (a[k + 1] - a[k]);
+    const s = spans;
+    if (!s.length || s.some((v) => v == null)) return 0;
+    for (let k = 0; k < s.length; k++) {
+      if (y > s[k][1]) continue;
+      if (k === 0 || y >= s[k][0]) return k;
+      return k - 1 + (y - s[k - 1][1]) / (s[k][0] - s[k - 1][1]);
     }
-    return a.length - 1;
+    return s.length - 1;
   }
   measure();
   window.addEventListener("load", measure);
@@ -263,42 +271,53 @@ function start() {
     mouse.ty = e.clientY / window.innerHeight - 0.5;
   }, { passive: true });
 
-  let lastW = window.innerWidth;
-  window.addEventListener("resize", () => {
-    if (window.innerWidth === lastW && Math.abs(window.innerHeight - renderer.domElement.clientHeight) < 160) return;
-    lastW = window.innerWidth;
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    uniforms.uSize.value = narrow() ? 26 : 30;
-    if (reduced) frame(); // setSize clears the canvas
-  });
-
   let p = target();
   let px = 0, ps = 1, py = 0, pa = 1;
   const clock = new THREE.Clock();
   const introStart = performance.now();
-  let running = true;
+  // Fit the margin formations to the gap between the content column and the screen edge:
+  // shrink to fit (to 70% at most), then slide up to half off-screen, and if they still reach
+  // the content, dim them right down so the copy stays readable.
+  let drawnW = 0, drawnH = 0;
+  let placeTable = PLACE_WIDE;
+  function layout() {
+    if (narrow()) return (placeTable = PLACE_NARROW);
+    const halfW = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z * camera.aspect;
+    const about = document.getElementById("about");
+    const edge = about ? about.getBoundingClientRect().right - parseFloat(getComputedStyle(about).paddingRight) : drawnW;
+    const content = (edge / drawnW - 0.5) * 2 * halfW + 0.15; // content column's right edge plus a small gap, world x
+    const room = Math.max(0, halfW - content) / 2; // half the margin's width
+    placeTable = PLACE_WIDE.map((v, k) => {
+      if (!(k in MARGIN)) return v;
+      const [, s0, y, a] = v;
+      const s = Math.max(s0 * 0.7, Math.min(s0, room / MARGIN[k]));
+      const r = MARGIN[k] * s;
+      const x = halfW - room + Math.max(0, Math.min(r - room, r * 0.5));
+      return [x, s, y, x - r < content - 0.1 ? Math.min(a, 0.1) : a]; // dense rings add up, so 0.1
+    });
+  }
+
+  // Phones have no free column at Contact, so the dot lands at the empty end of the copy
+  // button's row instead of on the address, and moves with it.
+  const copyBtn = document.querySelector(".copy-btn");
+  function contactSpot() {
+    const r = copyBtn.getBoundingClientRect();
+    const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
+    const sx = Math.min(r.right + 64, drawnW - 48), sy = r.top + r.height / 2;
+    return [(sx / drawnW - 0.5) * 2 * halfH * camera.aspect, 0.8, (0.5 - sy / drawnH) * 2 * halfH, 1.0];
+  }
 
   function place(pp) {
-    const P = narrow() ? PLACE_NARROW : PLACE_WIDE;
+    const P = placeTable;
     const k = Math.min(5, Math.floor(pp));
     const f = pp - k;
     const e = f * f * (3 - 2 * f);
-    return P[k].map((v, i) => v + (P[k + 1][i] - v) * e);
+    const to = k === 5 && copyBtn && narrow() ? contactSpot() : P[k + 1];
+    return P[k].map((v, i) => v + (to[i] - v) * e);
   }
 
   const shade = document.querySelector(".shade");
-  let paused = false;
-  document.addEventListener("story:pause", () => (paused = true));
-  document.addEventListener("story:resume", () => {
-    if (!paused) return;
-    paused = false;
-    if (!reduced && running) requestAnimationFrame(frame);
-  });
-
   function frame() {
-    if (!running || paused) return;
     const t = clock.getElapsedTime();
     const goal = target();
     p += (goal - p) * (reduced ? 1 : 0.07);
@@ -329,28 +348,52 @@ function start() {
     if (shade) shade.style.opacity = String(1 - settle * 0.9);
     group.scale.setScalar(ps);
     renderer.render(scene, camera);
-    if (!reduced) requestAnimationFrame(frame);
   }
 
-  document.addEventListener("visibilitychange", () => {
-    const vis = document.visibilityState === "visible";
-    if (reduced) {
-      running = true; // still image: nothing loops, just redraw on return
-      if (vis) frame();
-      return;
-    }
-    if (vis && !running) {
-      running = true;
-      requestAnimationFrame(frame);
-    } else if (!vis) running = false;
-  });
-  if (reduced) {
-    // still image: redraw only when the section changes
+  // At most one animation loop: every start goes through schedule(), every stop through stop().
+  // Reduced motion draws a single still frame per schedule() instead of looping.
+  let rafId = 0;
+  let paused = false;
+  function tick() {
+    rafId = 0;
     frame();
-    window.addEventListener("scroll", () => requestAnimationFrame(frame), { passive: true });
-  } else {
-    requestAnimationFrame(frame);
+    if (!reduced) schedule();
   }
+  function schedule() {
+    if (!rafId && !paused && !document.hidden) rafId = requestAnimationFrame(tick);
+  }
+  function stop() {
+    cancelAnimationFrame(rafId);
+    rafId = 0;
+  }
+  document.addEventListener("story:pause", () => {
+    paused = true;
+    stop();
+  });
+  document.addEventListener("story:resume", () => {
+    paused = false;
+    schedule();
+  });
+  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : schedule()));
+
+  // The canvas is sized in CSS (full width x large-viewport height), so a phone's address bar
+  // sliding in and out leaves it alone while every real resize, height-only included, is followed.
+  function fit() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h || (w === drawnW && h === drawnH)) return;
+    drawnW = w;
+    drawnH = h;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    uniforms.uSize.value = narrow() ? 26 : 30;
+    layout();
+    if (reduced) schedule(); // setSize clears the canvas
+  }
+  fit();
+  window.addEventListener("resize", fit);
+  if (reduced) window.addEventListener("scroll", schedule, { passive: true }); // redraw the still for the new section
+  schedule();
   document.documentElement.classList.add("gl-ready");
 }
 
