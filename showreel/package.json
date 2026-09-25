@@ -1,0 +1,11 @@
+{
+  "name": "showreel",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "audio": "node audio/synth.mjs && ffmpeg -y -loglevel error -i audio/soundtrack.wav -c:a aac -b:a 192k audio/soundtrack.m4a",
+    "dev": "npx --yes hyperframes@0.8.77 preview",
+    "check": "npx --yes hyperframes@0.8.77 check",
+    "render": "npx --yes hyperframes@0.8.77 render --quality high --workers 4 --output renders/master.mp4 && ffmpeg -y -loglevel error -i renders/master.mp4 -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -profile:v high -movflags +faststart -c:a copy showreel.mp4"
+  }
+}
