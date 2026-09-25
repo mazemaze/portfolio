@@ -19,7 +19,7 @@ plugins — every frame is a pure function of time, so renders are repeatable.
 | 4–6 s | 03 Full stack | “Every layer.” The stack is shown as code (web, mobile, server, cloud, AI) | 48-cell grid: staggered waves, shape morphs, beat ripple; zoom-through |
 | 6–8 s | 04 Scale | 10K+ users; 5+ years, 15+ projects, 10+ industries; real project names on the tunnel frames | CSS 3D tunnel + extruded type; fly-through into a flash |
 | 8–10 s | 05 AI & frontier | AI, OpenAI / Claude API, Web3 | 4,200 seeded particles burst, assemble, shockwave, whip-pan |
-| 10–12 s | 06 Product | “Made to ship.” 10,000+ users, 15+ projects, available Sep 2026, Get in touch | UI micro-interactions: count-ups, chart, toggle, ring, cursor press + ripple |
+| 10–12 s | 06 Product | “Made to ship.” 10,000+ users, 15+ projects, remote from Sep 2026, Get in touch | UI micro-interactions: count-ups, chart, toggle, ring, cursor press + ripple |
 | 12–15 s | 07 Contact | Name, role, stack, portfolio and GitHub links | The click’s iris lands as the full stop after the name |
 
 The soundtrack (`audio/synth.mjs`) runs at 120 BPM, so every cut sits on a bar
@@ -55,7 +55,7 @@ The end card’s name, role and contact line are composition variables (defaults
 `Yujiro Hikawa`, `Full-Stack Engineer · PM · Tech Lead`,
 `mazemaze.github.io/portfolio · github.com/mazemaze`). A name stays on one line at
 up to 250 px; multi-word names wrap between words, at up to 210 px, when that makes
-them clearly larger. A single word too long for the line shrinks to fit. Latin and
+them clearly larger. A single word too long for the line shrinks to fit. Pass `"contact":""` to hide the contact line. Latin and
 Latin Extended letters use the brand font; other scripts (e.g. Japanese) fall back to
 the rendering machine’s system font.
 
