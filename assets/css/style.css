@@ -577,6 +577,11 @@ html[lang="ja"] .tl-role { letter-spacing: 0.1em; text-transform: none; }
   border: 1px solid var(--line);
 }
 
+html[lang="ja"] .reel-video[lang="en"],
+html:not([lang="ja"]) .reel-video[lang="ja"] {
+  display: none;
+}
+
 .reel-caption {
   margin-top: 14px;
   font-size: 0.72rem;

@@ -20,7 +20,6 @@ const I18N = {
     "reel.title": "Showreel",
     "reel.lead": "My work in fifteen seconds.",
     "reel.caption": "15 s · with sound · built in code with HTML + GSAP",
-    "reel.aria": "Showreel: Yujiro Hikawa, full-stack engineer, in 15 seconds",
 
     "about.title": "About",
     "about.lead": "An engineer who ships — from requirements to release, and everything after.",
@@ -123,7 +122,6 @@ const I18N = {
     "reel.title": "ショーリール",
     "reel.lead": "15秒でわかる、私の仕事。",
     "reel.caption": "15秒 · 音声あり · HTML + GSAPでコードから制作",
-    "reel.aria": "ショーリール：フルスタックエンジニア ヒカワ ユウジロウを15秒で紹介",
 
     "about.title": "私について",
     "about.lead": "要件定義からリリース、その先の運用まで。完走するエンジニア。",
@@ -241,17 +239,10 @@ const I18N = {
     if (ogTitle) ogTitle.setAttribute("content", document.title);
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc && desc) ogDesc.setAttribute("content", desc);
-    const reel = document.getElementById("reelVideo");
-    if (reel) {
-      const suffix = lang === "ja" ? "Ja" : "En";
-      const src = reel.dataset["src" + suffix];
-      if (reel.getAttribute("src") !== src) {
-        reel.pause();
-        reel.setAttribute("src", src);
-        reel.setAttribute("poster", reel.dataset["poster" + suffix]);
-      }
-      reel.setAttribute("aria-label", dict["reel.aria"]);
-    }
+    // Both showreel versions are in the page; CSS shows the one for this language.
+    document.querySelectorAll(".reel-video").forEach((v) => {
+      if (v.lang !== lang) v.pause();
+    });
     buttons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
     localStorage.setItem(STORAGE_KEY, lang);
   }
