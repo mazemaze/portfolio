@@ -46,6 +46,15 @@ for f in showreel.mp4 showreel-ja.mp4; do
   check_video "$f"
 done
 
+# The Japanese file must really be the Japanese render: at 11.3 s the left column
+# ("Made to ship." vs 「作って、届ける。」) differs, so the crops must not match.
+ssim=$(ffmpeg -hide_banner -loglevel info -ss 11.3 -i showreel.mp4 -ss 11.3 -i showreel-ja.mp4 \
+  -filter_complex "[0:v]crop=640:760:120:160,trim=end_frame=1[a];[1:v]crop=640:760:120:160,trim=end_frame=1[b];[a][b]ssim" \
+  -frames:v 1 -f null - 2>&1 | sed -n 's/.*All:\([0-9.]*\).*/\1/p' | tail -1)
+[ -n "$ssim" ] || fail "could not compare the English and Japanese videos"
+awk -v s="$ssim" 'BEGIN { exit !(s < 0.95) }' || fail "showreel-ja.mp4 looks like the English video (SSIM $ssim at 11.3 s)"
+echo "ok  showreel-ja.mp4 differs from English where the copy does (SSIM $ssim)"
+
 # 3. HyperFrames gates: lint, runtime, layout, motion, WCAG contrast, for English and Japanese.
 #    check exits 1 when it finds problems, so read its JSON verdict rather than the exit code.
 #    check has no --variables, so the Japanese pass runs on a temp copy whose default language is ja.

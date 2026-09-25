@@ -464,7 +464,7 @@
       #root.lang-ja .s6-head { font-size: 124px; line-height: 1.05; letter-spacing: 0; }
       #root.lang-ja .btn { font-size: 38px; }
       #root.lang-ja .toggle-row .lbl { font-size: 34px; }
-      #root.lang-ja .role { font-size: 58px; }
+      #root.lang-ja .role { font-size: 58px; font-family: "Zen Kaku Gothic New", sans-serif; }
       #root.lang-ja .name { line-height: 1.02; letter-spacing: 0; }
       #grain { position: absolute; inset: 0; z-index: 90; opacity: 0.035; pointer-events: none; }
     </style>
@@ -740,7 +740,8 @@
         };
 
         // Build DOM and take every measurement once, before the timeline exists.
-        // Japanese copy, from the portfolio site's Japanese text (assets/js/i18n.js, ja)
+        // Japanese copy: the portfolio site's Japanese text (assets/js/i18n.js, ja) where it exists,
+        // otherwise a translation of the English line. Latin graphic labels stay in English.
         const JA = [
           ["#s1-meta", "01 — フルサイクル開発 · 要件定義から運用まで"],
           ["#s1-l1", "0から1を生み出し、"],
@@ -752,8 +753,8 @@
           ["#s2-label", "ヒカワ ユウジロウ — 東京 / フルリモート"],
           ["#s2-sub", "フルスタックエンジニア。"],
           ["#s3-kicker", "03 — フルスタック · 15以上のプロジェクト"],
-          ["#s3-l1", "フル"],
-          ["#s3-l2", "スタック。"],
+          ["#s3-l1", "表から、"],
+          ["#s3-l2", "裏まで。"],
           ["#s3-beats .mono", "Web · モバイル · クラウド · AI"],
           ["#s4-info > div:nth-child(1)", "04 — スケール"],
           ["#s4-info > div:nth-child(2)", "数万人規模のアプリ開発"],
@@ -763,9 +764,9 @@
           ["#s6-l1", "作って、"],
           ["#s6-l2", '届ける<span class="dot">。</span>'],
           ["#s6-list > div:nth-child(1)", "フルサイクル開発"],
-          ["#s6-list > div:nth-child(2)", "0→1立ち上げ・リード"],
+          ["#s6-list > div:nth-child(2)", "0→1立ち上げ・リーダーシップ"],
           ["#s6-list > div:nth-child(3)", "採用・新人教育"],
-          ["#cardA > .mono", "ユーザー数 · 開発したアプリ"],
+          ["#cardA > .mono", "開発したアプリのユーザー数"],
           ["#cardB > .mono", "2026年9月から"],
           ["#cardB .lbl", "リモート"],
           ["#cardC > .mono", "実績"],
@@ -781,7 +782,7 @@
           ["#chap-list > div:nth-child(4)", "04 · スケール"],
           ["#chap-list > div:nth-child(5)", "05 · AI・先端技術"],
           ["#chap-list > div:nth-child(6)", "06 · プロダクト"],
-          ["#chap-list > div:nth-child(7)", "07 · コンタクト"],
+          ["#chap-list > div:nth-child(7)", "07 · お問い合わせ"],
         ];
         const JA_PROJECTS = ["AIフィットネスアプリ · 0→1", "G7サミット向けWeb3アプリ", "Android TV・Web", "バンクアプリ", "AI基幹システム", "LLMコーディング支援", "自動車 新規サービスアプリ", "教育系ECアプリ · Stripe"];
 

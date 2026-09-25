@@ -58,14 +58,18 @@ npm run verify   # machine check of both videos: 1920x1080/30fps/450 frames/15 s
 ### Japanese version
 
 The same composition renders in Japanese with the `lang` variable (`npm run render:ja`
-does this). All Japanese copy comes from the portfolio site’s Japanese text
-(`assets/js/i18n.js`, `ja`) and lives in the `JA` list in `index.html`. The name and role
+does this). The Japanese copy lives in the `JA` list in `index.html`: it uses the
+portfolio site’s Japanese text (`assets/js/i18n.js`, `ja`) where it exists, and
+translates the English reel’s line otherwise. Latin graphic labels (HUD, badge, stack
+marquee, HIKAWA) stay in English. The name and role
 switch to ヒカワ ユウジロウ / フルスタックエンジニア · PM · テックリード unless you pass your own.
 
 Japanese text uses Zen Kaku Gothic New, subset to the reel’s characters plus all
 hiragana and katakana (~40 KB per weight instead of ~2.3 MB). After changing the
-Japanese copy, or when passing a name with new kanji, rebuild the subsets with
-`npm run fonts:ja` (needs `pip install fonttools brotli`).
+Japanese copy, rebuild the subsets with `npm run fonts:ja` (needs
+`pip install fonttools brotli`). For a name with kanji that aren’t in the reel, pass
+it too: `python3 fonts/subset-ja.py "山田 太郎"`. Otherwise those kanji fall back to
+the rendering machine’s system font.
 
 ### Change the end card
 
@@ -74,8 +78,8 @@ The end card’s name, role and contact line are composition variables (defaults
 `mazemaze.github.io/portfolio · github.com/mazemaze`). A name stays on one line at
 up to 250 px; multi-word names wrap between words, at up to 210 px, when that makes
 them clearly larger. A single word too long for the line shrinks to fit. Pass `"contact":""` to hide the contact line. Latin and
-Latin Extended letters use the brand font; other scripts (e.g. Japanese) fall back to
-the rendering machine’s system font.
+Latin Extended letters use Anybody, and kana plus the reel’s own kanji use Zen Kaku Gothic
+New. Other characters fall back to the rendering machine’s system font.
 
 ```sh
 npx --yes hyperframes@0.8.77 render --quality high \
@@ -88,8 +92,10 @@ npx --yes hyperframes@0.8.77 render --quality high \
 - **Two encodes:** HyperFrames’ high-quality output is a ~30 MB master. The second
   pass makes the streamable share file (SSIM 0.98 against the master; the difference
   isn’t visible at 100% zoom). Keep the master if you need a higher-quality upload.
-- **Fonts:** the `.woff2` files are the unmodified Latin / Latin Extended subsets served
-  by Google Fonts (Anybody v13, IBM Plex Mono v20), bundled so renders work offline.
+- **Fonts:** the Anybody and IBM Plex Mono `.woff2` files are the unmodified Latin / Latin
+  Extended subsets served by Google Fonts (Anybody v13, IBM Plex Mono v20). The Zen Kaku
+  Gothic New files are our own subsets, built by `fonts/subset-ja.py`. All are bundled
+  so renders work offline.
   All three are SIL Open Font License 1.1 (see `fonts/OFL-*.txt`). “Plex” is a Reserved
   Font Name, so don’t modify and redistribute those files under that name. Zen Kaku
-  Gothic New has no Reserved Font Name, which is why it can be subset.
+  Gothic New has no Reserved Font Name, so its subsets can keep that name.
