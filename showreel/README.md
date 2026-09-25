@@ -10,6 +10,10 @@ plugins — every frame is a pure function of time, so renders are repeatable.
 
 ![Contact sheet](docs/contact-sheet.jpg)
 
+Japanese version (`showreel-ja.mp4`):
+
+![Contact sheet, Japanese](docs/contact-sheet-ja.jpg)
+
 ## What’s in it
 
 | Time | Chapter | What it says | Technique |
@@ -31,8 +35,9 @@ line (2, 4, 6, 8, 10, 12 s) and the ball’s three bounces land on beats
 ```
 index.html          # the whole composition (one timeline; transitions cross scene boundaries)
 audio/synth.mjs     # procedural soundtrack -> audio/soundtrack.wav -> soundtrack.m4a
-fonts/              # Anybody (variable, Latin + Latin Extended) + IBM Plex Mono, both SIL OFL
+fonts/              # Anybody (Latin + Latin Extended), IBM Plex Mono, Zen Kaku Gothic New (Japanese subset); all SIL OFL
 showreel.mp4        # the rendered reel: H.264 CRF 23 + AAC, faststart, ~11 MB (fits email limits)
+showreel-ja.mp4     # the Japanese version (same motion and sound)
 docs/               # contact sheet + preview GIF
 ```
 
@@ -44,10 +49,23 @@ Requires Node 22+ and FFmpeg.
 cd showreel
 npm run dev      # live preview in HyperFrames Studio
 npm run check    # lint + runtime + layout + motion + contrast
-npm run render   # HyperFrames master (renders/master.mp4, ~30 MB) -> share encode showreel.mp4
+npm run render   # both languages: HyperFrames masters (renders/, ~30 MB each) -> showreel.mp4 + showreel-ja.mp4
+npm run render:en / render:ja   # one language only
 npm run audio    # re-synthesise the soundtrack
-npm run verify   # machine check of showreel.mp4: 1920x1080/30fps/450 frames/15 s, audio hits on the 2 s beat grid, HyperFrames gates
+npm run verify   # machine check of both videos: 1920x1080/30fps/450 frames/15 s, audio hits on the 2 s beat grid, HyperFrames gates
 ```
+
+### Japanese version
+
+The same composition renders in Japanese with the `lang` variable (`npm run render:ja`
+does this). All Japanese copy comes from the portfolio site’s Japanese text
+(`assets/js/i18n.js`, `ja`) and lives in the `JA` list in `index.html`. The name and role
+switch to ヒカワ ユウジロウ / フルスタックエンジニア · PM · テックリード unless you pass your own.
+
+Japanese text uses Zen Kaku Gothic New, subset to the reel’s characters plus all
+hiragana and katakana (~40 KB per weight instead of ~2.3 MB). After changing the
+Japanese copy, or when passing a name with new kanji, rebuild the subsets with
+`npm run fonts:ja` (needs `pip install fonttools brotli`).
 
 ### Change the end card
 
@@ -72,5 +90,6 @@ npx --yes hyperframes@0.8.77 render --quality high \
   isn’t visible at 100% zoom). Keep the master if you need a higher-quality upload.
 - **Fonts:** the `.woff2` files are the unmodified Latin / Latin Extended subsets served
   by Google Fonts (Anybody v13, IBM Plex Mono v20), bundled so renders work offline.
-  Both are SIL Open Font License 1.1 (see `fonts/OFL-*.txt`); “Plex” is a Reserved
-  Font Name, so don’t modify and redistribute those files under that name.
+  All three are SIL Open Font License 1.1 (see `fonts/OFL-*.txt`). “Plex” is a Reserved
+  Font Name, so don’t modify and redistribute those files under that name. Zen Kaku
+  Gothic New has no Reserved Font Name, which is why it can be subset.

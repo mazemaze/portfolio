@@ -4,7 +4,8 @@
   data-composition-variables='[
     {"id":"name","type":"string","label":"Name on the end card","default":"Yujiro Hikawa"},
     {"id":"role","type":"string","label":"Role line on the end card","default":"Full-Stack Engineer · PM · Tech Lead"},
-    {"id":"contact","type":"string","label":"Contact line on the end card","default":"mazemaze.github.io/portfolio · github.com/mazemaze"}
+    {"id":"contact","type":"string","label":"Contact line on the end card","default":"mazemaze.github.io/portfolio · github.com/mazemaze"},
+    {"id":"lang","type":"enum","label":"Language","default":"en","options":[{"value":"en","label":"English"},{"value":"ja","label":"日本語"}]}
   ]'
 >
   <head>
@@ -48,6 +49,31 @@
         font-display: block;
       }
 
+      @font-face {
+        font-family: "Zen Kaku Gothic New";
+        src: url("fonts/ZenKakuGothicNew-Light-subset.woff2") format("woff2");
+        font-weight: 300;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Zen Kaku Gothic New";
+        src: url("fonts/ZenKakuGothicNew-Medium-subset.woff2") format("woff2");
+        font-weight: 500;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Zen Kaku Gothic New";
+        src: url("fonts/ZenKakuGothicNew-Bold-subset.woff2") format("woff2");
+        font-weight: 700;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Zen Kaku Gothic New";
+        src: url("fonts/ZenKakuGothicNew-Black-subset.woff2") format("woff2");
+        font-weight: 900;
+        font-display: block;
+      }
+
       /* Palette: ink #0D0C11 · panel #17161D · bone #F2EDE4 · ash #8F897F · signal #FF4D1F */
       * {
         margin: 0;
@@ -68,7 +94,7 @@
         overflow: hidden;
         background: #0d0c11;
         color: #f2ede4;
-        font-family: "Anybody", sans-serif;
+        font-family: "Anybody", "Zen Kaku Gothic New", sans-serif;
       }
       .scene {
         position: absolute;
@@ -77,7 +103,7 @@
         background: #0d0c11;
       }
       .mono {
-        font-family: "IBM Plex Mono", monospace;
+        font-family: "IBM Plex Mono", "Zen Kaku Gothic New", monospace;
         font-weight: 500;
         font-size: 20px;
         line-height: 28px;
@@ -431,6 +457,15 @@
       .chip i { width: 12px; height: 12px; background: #ff4d1f; display: block; }
       .s7-code { color: #f2ede4; text-transform: none; font-size: 26px; line-height: 34px; letter-spacing: 0.04em; margin-top: 6px; }
       #iris2 { z-index: 60; }
+      /* Japanese version: full-width glyphs need smaller display sizes and more leading */
+      #root.lang-ja .s1-head { font-size: 96px; line-height: 1.12; letter-spacing: 0; }
+      #root.lang-ja .s2-sub { font-size: 100px; line-height: 1.15; letter-spacing: 0; }
+      #root.lang-ja .s3-head { font-size: 110px; line-height: 1.08; letter-spacing: 0; }
+      #root.lang-ja .s6-head { font-size: 124px; line-height: 1.05; letter-spacing: 0; }
+      #root.lang-ja .btn { font-size: 38px; }
+      #root.lang-ja .toggle-row .lbl { font-size: 34px; }
+      #root.lang-ja .role { font-size: 58px; }
+      #root.lang-ja .name { line-height: 1.02; letter-spacing: 0; }
       #grain { position: absolute; inset: 0; z-index: 90; opacity: 0.035; pointer-events: none; }
     </style>
   </head>
@@ -705,7 +740,61 @@
         };
 
         // Build DOM and take every measurement once, before the timeline exists.
-        function setup(NAME, ROLE, CONTACT) {
+        // Japanese copy, from the portfolio site's Japanese text (assets/js/i18n.js, ja)
+        const JA = [
+          ["#s1-meta", "01 — フルサイクル開発 · 要件定義から運用まで"],
+          ["#s1-l1", "0から1を生み出し、"],
+          ["#s1-l2", '数万人に届ける<span class="dot" id="s1-dot">。</span>'],
+          ["#co1 b", "要件定義"],
+          ["#co2 b", "設計"],
+          ["#co3 b", "実装・テスト"],
+          ["#co4 b", "改善"],
+          ["#s2-label", "ヒカワ ユウジロウ — 東京 / フルリモート"],
+          ["#s2-sub", "フルスタックエンジニア。"],
+          ["#s3-kicker", "03 — フルスタック · 15以上のプロジェクト"],
+          ["#s3-l1", "フル"],
+          ["#s3-l2", "スタック。"],
+          ["#s3-beats .mono", "Web · モバイル · クラウド · AI"],
+          ["#s4-info > div:nth-child(1)", "04 — スケール"],
+          ["#s4-info > div:nth-child(2)", "数万人規模のアプリ開発"],
+          ["#s4-info > div:nth-child(3)", "経験5年以上 · 15以上のプロジェクト · 10以上の業界"],
+          ["#s5-cap", "05 — AI・先端技術 · AIチャット・音声 · LLMコーディング支援 · Web3"],
+          ["#s6-kicker", "06 — プロダクト"],
+          ["#s6-l1", "作って、"],
+          ["#s6-l2", '届ける<span class="dot">。</span>'],
+          ["#s6-list > div:nth-child(1)", "フルサイクル開発"],
+          ["#s6-list > div:nth-child(2)", "0→1立ち上げ・リード"],
+          ["#s6-list > div:nth-child(3)", "採用・新人教育"],
+          ["#cardA > .mono", "ユーザー数 · 開発したアプリ"],
+          ["#cardB > .mono", "2026年9月から"],
+          ["#cardB .lbl", "リモート"],
+          ["#cardC > .mono", "実績"],
+          ["#cardC .ring-val .mono", "プロジェクト"],
+          ["#cardC .ring-foot", "10以上の業界"],
+          ["#cardD > .mono", "お問い合わせ"],
+          ["#btn > span", "一緒に作りましょう"],
+          ["#s7-meta", "ショーリール 2026 · 東京 / フルリモート"],
+          [".hud-row.top > div:nth-child(2)", "プロダクト / エンジニアリング / AI"],
+          ["#chap-list > div:nth-child(1)", "01 · フルサイクル"],
+          ["#chap-list > div:nth-child(2)", "02 · プロフィール"],
+          ["#chap-list > div:nth-child(3)", "03 · フルスタック"],
+          ["#chap-list > div:nth-child(4)", "04 · スケール"],
+          ["#chap-list > div:nth-child(5)", "05 · AI・先端技術"],
+          ["#chap-list > div:nth-child(6)", "06 · プロダクト"],
+          ["#chap-list > div:nth-child(7)", "07 · コンタクト"],
+        ];
+        const JA_PROJECTS = ["AIフィットネスアプリ · 0→1", "G7サミット向けWeb3アプリ", "Android TV・Web", "バンクアプリ", "AI基幹システム", "LLMコーディング支援", "自動車 新規サービスアプリ", "教育系ECアプリ · Stripe"];
+
+        function setup(NAME, ROLE, CONTACT, LANG) {
+          if (LANG === "ja") {
+            document.documentElement.lang = "ja";
+            $("#root").classList.add("lang-ja");
+            JA.forEach(([sel, html]) => {
+              const el = $(sel);
+              if (!el) throw new Error("JA copy target missing: " + sel);
+              el.innerHTML = html;
+            });
+          }
           const rnd3 = mulberry32(2026);
           const RADII = ["50% 50% 50% 50%", "0% 0% 0% 0%", "100% 0% 0% 0%", "50% 0% 50% 0%"];
           const ALT = [1, 0, 3, 2];
@@ -872,11 +961,14 @@
 
         function build() {
           const vars = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
-          const NAME = String(vars.name || "").trim().toUpperCase() || "YUJIRO HIKAWA";
-          const ROLE = String(vars.role || "Full-Stack Engineer · PM · Tech Lead");
+          const LANG = vars.lang === "ja" ? "ja" : "en";
+          const nameIn = String(vars.name || "").trim();
+          const roleIn = String(vars.role || "");
+          const NAME = LANG === "ja" && (!nameIn || nameIn === "Yujiro Hikawa") ? "ヒカワ ユウジロウ" : nameIn.toUpperCase() || "YUJIRO HIKAWA";
+          const ROLE = LANG === "ja" && (!roleIn || roleIn === "Full-Stack Engineer · PM · Tech Lead") ? "フルスタックエンジニア · PM · テックリード" : roleIn || "Full-Stack Engineer · PM · Tech Lead";
           const CONTACT = String(vars.contact ?? "mazemaze.github.io/portfolio · github.com/mazemaze");
 
-          const { cells, shapes, altR, altBg, zi, ctx, P, ringLen, bx, by, IR, pcx, pcy, pSize } = setup(NAME, ROLE, CONTACT);
+          const { cells, shapes, altR, altBg, zi, ctx, P, ringLen, bx, by, IR, pcx, pcy, pSize } = setup(NAME, ROLE, CONTACT, LANG);
 
           const tl = gsap.timeline({ paused: true });
 
@@ -1100,7 +1192,8 @@
             f.className = "tframe" + (i % 4 === 1 ? " hot" : "");
             const lab = document.createElement("span");
             lab.className = "mono";
-            lab.textContent = PROJECTS[i % PROJECTS.length];
+            const list = LANG === "ja" ? JA_PROJECTS : PROJECTS;
+            lab.textContent = list[i % list.length];
             f.appendChild(lab);
             $("#s4-tunnel").appendChild(f);
             frames.push(f);
@@ -1260,6 +1353,10 @@
           document.fonts.load('900 100px "Anybody"'),
           document.fonts.load('900 100px "Anybody"', "\u0100"),
           document.fonts.load('300 100px "Anybody"'),
+          document.fonts.load('300 100px "Zen Kaku Gothic New"', "\u30d2"),
+          document.fonts.load('500 20px "Zen Kaku Gothic New"', "\u30d2"),
+          document.fonts.load('700 20px "Zen Kaku Gothic New"', "\u30d2"),
+          document.fonts.load('900 100px "Zen Kaku Gothic New"', "\u30d2"),
           document.fonts.load('500 20px "IBM Plex Mono"'),
           document.fonts.load('400 20px "IBM Plex Mono"'),
           document.fonts.load('600 20px "IBM Plex Mono"'),

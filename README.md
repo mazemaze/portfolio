@@ -8,7 +8,7 @@ hero. Zero build step — plain HTML/CSS/JS, libraries loaded from pinned CDNs.
 ```
 index.html                 # all sections, data-i18n attributes
 skill-match.html           # ◯/△/× skill-match sheet for recruiting agents (JA-only, self-contained JS)
-showreel/                  # 15s motion-design showreel (HyperFrames source + rendered showreel.mp4; see showreel/README.md)
+showreel/                  # 15s showreel, English + Japanese (HyperFrames source + showreel.mp4 / showreel-ja.mp4; see showreel/README.md)
 assets/css/style.css       # dark cinematic theme
 assets/css/skill-match.css # skill-match page tables/FAQ styles
 assets/js/i18n.js          # JA/EN dictionary + language toggle
