@@ -29,7 +29,7 @@ const I18N = {
     "reel.close": "Close",
     "reel.error": "The video couldn't load.",
     "reel.download": "Download it instead",
-    "reel.caption": "15 s · with sound · built in code with HTML + GSAP",
+    "reel.caption": "15 sec · with sound · built in code with HTML + GSAP",
 
     "about.title": "About",
     "about.lead": "An engineer who ships — from requirements to release, and everything after.",
@@ -141,7 +141,7 @@ const I18N = {
     "reel.close": "閉じる",
     "reel.error": "動画を読み込めませんでした。",
     "reel.download": "ダウンロードして観る",
-    "reel.caption": "15秒 · 音声あり · HTML + GSAPでコードから制作",
+    "reel.caption": "15秒 · 音声あり · HTML + GSAP · コードで制作",
 
     "about.title": "私について",
     "about.lead": "要件定義からリリース、その先の運用まで。完走するエンジニア。",
@@ -259,14 +259,21 @@ const I18N = {
     if (ogTitle) ogTitle.setAttribute("content", document.title);
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc && desc) ogDesc.setAttribute("content", desc);
-    // Both showreel versions are in the page; CSS shows the one for this language.
-    document.querySelectorAll(".reel-video").forEach((v) => {
-      if (v.lang !== lang) v.pause();
-    });
+    pauseHiddenReels();
     buttons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
     localStorage.setItem(STORAGE_KEY, lang);
     document.dispatchEvent(new CustomEvent("i18n:change", { detail: { lang, dict } }));
   }
+
+  // Both showreel versions are in the page and CSS shows the one for the page language.
+  // Pause whichever is hidden, also when something else (e.g. a translation extension)
+  // rewrites <html lang>.
+  function pauseHiddenReels() {
+    document.querySelectorAll(".reel-video").forEach((v) => {
+      if (getComputedStyle(v).display === "none") v.pause();
+    });
+  }
+  new MutationObserver(pauseHiddenReels).observe(html, { attributes: true, attributeFilter: ["lang"] });
 
   function apply(lang, instant) {
     const main = document.querySelector("main");
