@@ -17,7 +17,15 @@ const I18N = {
     "hero.cta.work": "View Experience",
     "hero.cta.contact": "Get in Touch",
     "hero.cta.reel": "Play showreel",
-    "hero.available": "Open to new projects from Sep 2026 · Full remote",
+    "hero.available": "Available now for new projects",
+    "contact.copy": "Copy",
+    "contact.copied": "Copied",
+    "contact.copyFail": "Select to copy",
+    "aria.nav": "Primary",
+    "aria.lang": "Language",
+    "aria.menu": "Open menu",
+    "aria.mobileNav": "Menu",
+    "aria.radar": "Skill proficiency radar",
     "hud.scroll": "Scroll",
     "hud.top": "Top",
 
@@ -130,7 +138,15 @@ const I18N = {
     "hero.cta.work": "経歴を見る",
     "hero.cta.contact": "お問い合わせ",
     "hero.cta.reel": "ショーリールを再生",
-    "hero.available": "2026年9月からフルリモートで参画可能",
+    "hero.available": "現在、新規プロジェクトに参画可能",
+    "contact.copy": "コピー",
+    "contact.copied": "コピーしました",
+    "contact.copyFail": "選択してコピー",
+    "aria.nav": "メインメニュー",
+    "aria.lang": "言語",
+    "aria.menu": "メニューを開く",
+    "aria.mobileNav": "メニュー",
+    "aria.radar": "スキル習熟度のレーダーチャート",
     "hud.scroll": "スクロール",
     "hud.top": "トップ",
 
@@ -248,6 +264,10 @@ const I18N = {
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       if (dict[key] != null) el.textContent = dict[key];
+    });
+    document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-aria");
+      if (dict[key] != null) el.setAttribute("aria-label", dict[key]);
     });
     html.setAttribute("lang", lang);
     document.title =

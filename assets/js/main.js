@@ -14,8 +14,16 @@
     typeof Intl !== "undefined" && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
   function split(el) {
     const text = el.textContent;
-    el.setAttribute("aria-label", text);
+    if (el.dataset.split === "latin" && document.documentElement.lang === "ja") {
+      el.classList.add("whole");
+      return;
+    }
+    el.classList.remove("whole");
     el.textContent = "";
+    const sr = document.createElement("span");
+    sr.className = "sr-only";
+    sr.textContent = text;
+    el.appendChild(sr);
     let i = 0;
     text.split(/(\s+)/).forEach((part) => {
       if (!part) return;
@@ -59,7 +67,7 @@
   if (reduced) boot();
   else {
     const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
-    Promise.race([fonts, new Promise((r) => setTimeout(r, 1600))]).then(() => requestAnimationFrame(boot));
+    Promise.race([fonts, new Promise((r) => setTimeout(r, 700))]).then(() => requestAnimationFrame(boot));
   }
 
   /* ---------- Reveal on scroll ---------- */
@@ -68,13 +76,13 @@
   if ("IntersectionObserver" in window && !reduced) {
     const io = new IntersectionObserver(
       (entries) => {
+        let k = 0;
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const el = entry.target;
-          const siblings = Array.from(el.parentElement.querySelectorAll(":scope > .reveal"));
-          const idx = Math.max(0, siblings.indexOf(el));
-          el.style.transitionDelay = `${Math.min(idx * 80, 400)}ms`;
+          el.style.transitionDelay = `${Math.min(k++ * 80, 320)}ms`;
           el.classList.add("in");
+          el.addEventListener("transitionend", () => (el.style.transitionDelay = ""), { once: true });
           el.querySelectorAll("[data-count]").forEach(count);
           io.unobserve(el);
         });
@@ -88,6 +96,12 @@
 
   /* ---------- Counters (5+, 15+, 10+, 10k+) ---------- */
 
+  function setCount(el, n, suffix) {
+    el.textContent = String(n);
+    const em = document.createElement("em");
+    em.textContent = suffix;
+    el.appendChild(em);
+  }
   function count(el) {
     const to = Number(el.dataset.count);
     const suffix = el.dataset.suffix || "";
@@ -96,15 +110,16 @@
     (function tick(now) {
       const k = Math.min(1, (now - t0) / dur);
       const e = 1 - Math.pow(1 - k, 3);
-      el.innerHTML = Math.round(to * e) + "<em>" + suffix + "</em>";
+      setCount(el, Math.round(to * e), suffix);
       if (k < 1) requestAnimationFrame(tick);
     })(t0);
   }
-  if (reduced) document.querySelectorAll("[data-count]").forEach((el) => (el.innerHTML = el.dataset.count + "<em>" + (el.dataset.suffix || "") + "</em>"));
+  if (reduced) document.querySelectorAll("[data-count]").forEach((el) => setCount(el, el.dataset.count, el.dataset.suffix || ""));
 
   /* ---------- Camera HUD: chapter label, scroll %, progress, header ---------- */
 
   const header = document.getElementById("siteHeader");
+  const navLinks = document.querySelectorAll(".site-nav a");
   const progress = document.getElementById("scrollProgress");
   const chapterEl = document.getElementById("hudChapter");
   const pctEl = document.getElementById("hudPct");
@@ -137,8 +152,18 @@
     if (pctEl) pctEl.textContent = String(Math.round(k * 100)).padStart(3, "0");
     const mid = y + window.innerHeight * 0.45;
     let label = chapters[0] && chapters[0].label;
+    let current = "hero";
     chapters.forEach((c) => {
-      if (c.el && c.el.offsetTop <= mid) label = c.label;
+      if (c.el && c.el.offsetTop <= mid) {
+        label = c.label;
+        current = c.el.id;
+      }
+    });
+    navLinks.forEach((a) => {
+      const active = a.getAttribute("href") === "#" + current;
+      a.classList.toggle("active", active);
+      if (active) a.setAttribute("aria-current", "true");
+      else a.removeAttribute("aria-current");
     });
     if (chapterEl && label !== lastLabel) {
       lastLabel = label;
@@ -149,30 +174,6 @@
   window.addEventListener("resize", onScroll);
   onScroll();
 
-  /* ---------- Scrollspy ---------- */
-
-  const navLinks = document.querySelectorAll(".site-nav a");
-  const spyTargets = Array.from(navLinks)
-    .map((a) => document.querySelector(a.getAttribute("href")))
-    .filter(Boolean);
-  if ("IntersectionObserver" in window && spyTargets.length) {
-    const spy = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          navLinks.forEach((a) => {
-            const active = a.getAttribute("href") === "#" + entry.target.id;
-            a.classList.toggle("active", active);
-            if (active) a.setAttribute("aria-current", "true");
-            else a.removeAttribute("aria-current");
-          });
-        });
-      },
-      { rootMargin: "-38% 0px -55% 0px" }
-    );
-    spyTargets.forEach((s) => spy.observe(s));
-  }
-
   /* ---------- Mobile menu ---------- */
 
   const menuBtn = document.getElementById("menuBtn");
@@ -182,6 +183,8 @@
       menuBtn.setAttribute("aria-expanded", String(open));
       menuBtn.classList.toggle("open", open);
       body.style.overflow = open ? "hidden" : "";
+      document.querySelector("main").inert = open;
+      document.querySelector(".site-footer").inert = open;
       if (open) {
         mobileMenu.hidden = false;
         requestAnimationFrame(() => mobileMenu.classList.add("open"));
@@ -215,13 +218,20 @@
       if (run && shown(v)) v.play().catch(() => {});
       else v.pause();
     });
-    if (pauseBtn) {
-      const dict = (typeof I18N !== "undefined" ? I18N : {})[document.documentElement.lang === "ja" ? "ja" : "en"] || {};
-      pauseBtn.setAttribute("aria-pressed", String(userPaused));
-      pauseBtn.classList.toggle("paused", userPaused || !autoplayAllowed);
-      pauseBtn.querySelector("span").textContent = userPaused || !autoplayAllowed ? dict["reel.play"] : dict["reel.pause"];
-    }
+    labelPause();
   }
+  function labelPause() {
+    if (!pauseBtn) return;
+    const dict = (typeof I18N !== "undefined" ? I18N : {})[document.documentElement.lang === "ja" ? "ja" : "en"] || {};
+    const playing = Array.from(document.querySelectorAll(".loop")).some((v) => shown(v) && !v.paused);
+    const showPlay = autoplayAllowed ? userPaused : !playing;
+    pauseBtn.classList.toggle("paused", showPlay);
+    pauseBtn.querySelector("span").textContent = showPlay ? dict["reel.play"] : dict["reel.pause"];
+  }
+  document.querySelectorAll(".loop").forEach((v) => {
+    v.addEventListener("play", labelPause);
+    v.addEventListener("pause", labelPause);
+  });
   if (devices && "IntersectionObserver" in window) {
     new IntersectionObserver((entries) => {
       loopsVisible = entries[0].isIntersecting;
@@ -232,7 +242,8 @@
     pauseBtn.addEventListener("click", () => {
       if (!autoplayAllowed) {
         // reduced motion / data saver: the button starts the loops on request
-        document.querySelectorAll(".loop").forEach((v) => shown(v) && (v.paused ? v.play().catch(() => {}) : v.pause()));
+        const anyPlaying = Array.from(document.querySelectorAll(".loop")).some((v) => shown(v) && !v.paused);
+        document.querySelectorAll(".loop").forEach((v) => shown(v) && (anyPlaying ? v.pause() : v.play().catch(() => {})));
         return;
       }
       userPaused = !userPaused;
@@ -252,7 +263,9 @@
       return;
     }
     if (errorEl) errorEl.hidden = true;
+    dialog.classList.remove("closing");
     dialog.showModal();
+    document.dispatchEvent(new Event("story:pause"));
     syncLoops();
     const v = currentFull();
     if (v) {
@@ -261,10 +274,21 @@
     }
   }
   if (dialog) {
-    document.getElementById("reelClose").addEventListener("click", () => dialog.close());
-    dialog.addEventListener("click", (e) => e.target === dialog && dialog.close()); // backdrop
+    const closeReel = () => {
+      if (!dialog.open || dialog.classList.contains("closing")) return;
+      dialog.classList.add("closing"); // 250 ms ease-in, then close
+      setTimeout(() => dialog.close(), reduced ? 0 : 250);
+    };
+    document.getElementById("reelClose").addEventListener("click", closeReel);
+    dialog.addEventListener("click", (e) => e.target === dialog && closeReel()); // backdrop
+    dialog.addEventListener("cancel", (e) => {
+      e.preventDefault(); // Esc: animate out instead of vanishing
+      closeReel();
+    });
     dialog.addEventListener("close", () => {
+      dialog.classList.remove("closing");
       document.querySelectorAll(".reel-video").forEach((v) => v.pause());
+      document.dispatchEvent(new Event("story:resume"));
       syncLoops();
     });
     document.querySelectorAll(".reel-video").forEach((v) =>
@@ -277,6 +301,26 @@
     );
   }
   document.querySelectorAll("[data-play-reel]").forEach((btn) => btn.addEventListener("click", openReel));
+
+  /* ---------- Copy email ---------- */
+
+  document.querySelectorAll("[data-copy]").forEach((btn) =>
+    btn.addEventListener("click", async () => {
+      const label = btn.querySelector("span");
+      const dict = (typeof I18N !== "undefined" ? I18N : {})[document.documentElement.lang === "ja" ? "ja" : "en"] || {};
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy);
+        btn.classList.add("copied");
+        label.textContent = dict["contact.copied"];
+      } catch {
+        label.textContent = dict["contact.copyFail"];
+      }
+      setTimeout(() => {
+        btn.classList.remove("copied");
+        label.textContent = dict["contact.copy"];
+      }, 2000);
+    })
+  );
 
   /* ---------- Footer year ---------- */
 

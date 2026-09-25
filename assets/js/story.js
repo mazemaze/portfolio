@@ -1,7 +1,7 @@
 /* ============================================================
    Particle story — one point cloud that changes formation as you
    scroll: sphere (hero) → screen (showreel) → lattice (about) →
-   three clusters (strengths) → radar (skills) → spine with eight
+   three clusters (strengths) → orbit rings (skills) → spine with eight
    nodes (experience) → the orange dot (contact), the same dot that
    ends the showreel. All formations live on the GPU; scroll only
    moves one uniform.
@@ -20,21 +20,23 @@ const SIGNAL = new THREE.Color(0xff4d1f);
 const PLACE_WIDE = [
   [1.55, 1.0, 0.0, 1.0], // hero: sphere beside the name
   [0.0, 2.15, -0.35, 0.75], // showreel: the screen frames the video
-  [2.9, 0.75, 0.9, 0.45], // about
+  [2.9, 0.75, 0.9, 0.4], // about
   [0.3, 1.0, 0.9, 0.9], // strengths: clusters above the cards
-  [2.9, 0.9, 0.2, 0.45], // skills
-  [3.75, 0.95, 0.0, 0.5], // experience: spine along the right edge
+  [3.3, 0.85, 0.3, 0.35], // skills: orbit rings in the right margin
+  [4.35, 0.95, 0.0, 0.4], // experience: spine along the right edge, off the tags
   [3.1, 1.35, 0.35, 1.0], // contact: the dot, clear of the headline
 ];
 const PLACE_NARROW = [
   [1.25, 0.7, 1.1, 0.5],
-  [0.0, 0.95, 0.0, 0.5],
-  [0.0, 0.6, 0.0, 0.3],
-  [0.0, 0.6, 1.8, 0.6],
-  [0.0, 0.6, 0.0, 0.3],
-  [0.0, 0.7, 0.0, 0.3],
+  [0.0, 0.95, 0.0, 0.35],
+  [0.0, 0.6, 0.0, 0.15],
+  [0.0, 0.6, 1.8, 0.5],
+  [0.0, 0.6, 0.0, 0.15],
+  [0.0, 0.7, 0.0, 0.15],
   [0.0, 1.0, 1.9, 1.0],
 ];
+// Flat formations (screen, radar-like) would turn edge-on while spinning; hold them still.
+const FLAT = [1];
 
 function mulberry32(a) {
   return function () {
@@ -96,30 +98,24 @@ function formations(n, rnd) {
       const R = 0.62 * Math.cbrt(0.35 + 0.65 * rnd());
       F[3].set([(k - 1) * 1.75 + Math.cos(th) * r * R, y * R, Math.sin(th) * r * R], j);
     }
-    // 4 · radar: six axes, concentric hexagons, and the skill polygon
+    // 4 · three tilted orbit rings around a small core (layers of the stack)
     {
-      const kind = rnd();
-      const ang = (a) => -Math.PI / 2 + (a * Math.PI) / 3;
-      if (kind < 0.45) {
-        const ring = 1 + Math.floor(rnd() * 5);
-        const side = Math.floor(rnd() * 6);
-        const t = rnd();
-        const R = ring * 0.36;
-        const x = Math.cos(ang(side)) * (1 - t) + Math.cos(ang(side + 1)) * t;
-        const y = Math.sin(ang(side)) * (1 - t) + Math.sin(ang(side + 1)) * t;
-        F[4].set([x * R, -y * R, (rnd() - 0.5) * 0.05], j);
-      } else if (kind < 0.62) {
-        const side = Math.floor(rnd() * 6);
-        const t = rnd() * 1.8;
-        F[4].set([Math.cos(ang(side)) * t, -Math.sin(ang(side)) * t, 0], j);
+      const ring = i % 4;
+      if (ring === 3) {
+        const y = 1 - 2 * rnd();
+        const r = Math.sqrt(1 - y * y);
+        const th = rnd() * Math.PI * 2;
+        const R = 0.32 * Math.cbrt(rnd());
+        F[4].set([Math.cos(th) * r * R, y * R, Math.sin(th) * r * R], j);
       } else {
-        const lv = [1.0, 0.96, 1.0, 0.92, 0.9, 0.98]; // mirrors the skill radar
-        const side = Math.floor(rnd() * 6);
-        const t = rnd();
-        const r0 = lv[side] * 1.8, r1 = lv[(side + 1) % 6] * 1.8;
-        const x = Math.cos(ang(side)) * r0 * (1 - t) + Math.cos(ang(side + 1)) * r1 * t;
-        const y = Math.sin(ang(side)) * r0 * (1 - t) + Math.sin(ang(side + 1)) * r1 * t;
-        F[4].set([x + (rnd() - 0.5) * 0.03, -y + (rnd() - 0.5) * 0.03, 0.02], j);
+        const R = 1.05 + ring * 0.42;
+        const a = rnd() * Math.PI * 2;
+        const tilt = [0.35, -0.6, 1.15][ring];
+        const turn = [0.0, 1.1, 2.2][ring];
+        let x = Math.cos(a) * R, y = Math.sin(a) * R * 0.28, z = Math.sin(a) * R;
+        const y1 = y * Math.cos(tilt) - z * Math.sin(tilt), z1 = y * Math.sin(tilt) + z * Math.cos(tilt);
+        const x2 = x * Math.cos(turn) + z1 * Math.sin(turn), z2 = -x * Math.sin(turn) + z1 * Math.cos(turn);
+        F[4].set([x2 + (rnd() - 0.5) * 0.04, y1 + (rnd() - 0.5) * 0.04, z2], j);
       }
     }
     // 5 · spine with eight nodes (eight projects), gently twisting
@@ -190,12 +186,13 @@ const fragment = /* glsl */ `
     if (d > 0.5) discard;
     float a = smoothstep(0.5, 0.15, d) * vAlpha;
     gl_FragColor = vec4(mix(uBone, uSignal, vHot), a);
+    #include <colorspace_fragment>
   }
 `;
 
 function start() {
   const narrow = () => window.innerWidth < 860;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
   const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
   renderer.setPixelRatio(dpr);
   renderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -242,7 +239,7 @@ function start() {
       const el = document.getElementById(id);
       if (!el) return null;
       const r = el.getBoundingClientRect();
-      return r.top + window.scrollY + Math.min(r.height, window.innerHeight) * 0.35;
+      return r.top + window.scrollY + Math.min(r.height, window.innerHeight) * (id === "hero" ? 0.5 : 0.35);
     });
   }
   function target() {
@@ -266,11 +263,15 @@ function start() {
     mouse.ty = e.clientY / window.innerHeight - 0.5;
   }, { passive: true });
 
+  let lastW = window.innerWidth;
   window.addEventListener("resize", () => {
+    if (window.innerWidth === lastW && Math.abs(window.innerHeight - renderer.domElement.clientHeight) < 160) return;
+    lastW = window.innerWidth;
     renderer.setSize(window.innerWidth, window.innerHeight, false);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     uniforms.uSize.value = narrow() ? 26 : 30;
+    if (reduced) frame(); // setSize clears the canvas
   });
 
   let p = target();
@@ -287,8 +288,17 @@ function start() {
     return P[k].map((v, i) => v + (P[k + 1][i] - v) * e);
   }
 
+  const shade = document.querySelector(".shade");
+  let paused = false;
+  document.addEventListener("story:pause", () => (paused = true));
+  document.addEventListener("story:resume", () => {
+    if (!paused) return;
+    paused = false;
+    if (!reduced && running) requestAnimationFrame(frame);
+  });
+
   function frame() {
-    if (!running) return;
+    if (!running || paused) return;
     const t = clock.getElapsedTime();
     const goal = target();
     p += (goal - p) * (reduced ? 1 : 0.07);
@@ -309,9 +319,14 @@ function start() {
     mouse.y += (mouse.ty - mouse.y) * 0.05;
     const spin = reduced ? 0 : t * 0.08;
     const settle = Math.min(1, Math.max(0, p - 5)); // the dot stops spinning
-    group.rotation.y = (spin + mouse.x * 0.5 + p * 0.55) * (1 - settle);
-    group.rotation.x = (mouse.y * 0.3 + Math.sin(p * 1.3) * 0.12) * (1 - settle);
+    const flat = FLAT.reduce((m, k) => Math.max(m, 1 - Math.min(1, Math.abs(p - k))), 0); // hold flat shapes face-on
+    const hold = Math.max(settle, flat);
+    group.rotation.y = (spin + mouse.x * 0.5 + p * 0.55) * (1 - hold) + mouse.x * 0.15 * flat;
+    group.rotation.x = (mouse.y * 0.3 + Math.sin(p * 1.3) * 0.12) * (1 - hold);
     group.position.set(px, py, 0);
+    // At Contact every particle has gathered into the dot, so the readability shade can
+    // lift and the dot shows in true signal orange.
+    if (shade) shade.style.opacity = String(1 - settle * 0.9);
     group.scale.setScalar(ps);
     renderer.render(scene, camera);
     if (!reduced) requestAnimationFrame(frame);
@@ -319,7 +334,12 @@ function start() {
 
   document.addEventListener("visibilitychange", () => {
     const vis = document.visibilityState === "visible";
-    if (vis && !running && !reduced) {
+    if (reduced) {
+      running = true; // still image: nothing loops, just redraw on return
+      if (vis) frame();
+      return;
+    }
+    if (vis && !running) {
       running = true;
       requestAnimationFrame(frame);
     } else if (!vis) running = false;

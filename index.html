@@ -33,14 +33,14 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/signal.css" />
   <noscript><style>.is-booting .boot, .is-booting .hero-name, .is-booting .hud, .reveal, .sec-head.reveal .sec-title, .sec-head.reveal .sec-no, .sec-head.reveal .sec-lead, .contact-line .ch { opacity: 1 !important; transform: none !important; clip-path: none !important; }</style></noscript>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js"
+        "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.min.js"
       }
     }
   </script>
@@ -54,32 +54,32 @@
   <div class="hud" aria-hidden="true">
     <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
     <div class="hud-chapter mono"><span class="rec"></span><span id="hudChapter">00 · Showreel</span></div>
-    <div class="hud-scroll mono"><span data-i18n="hud.scroll"></span> <b id="hudPct">000</b></div>
+    <div class="hud-scroll mono"><b id="hudPct">000</b>%</div>
   </div>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
   <header class="site-header" id="siteHeader">
     <a class="brand" href="#top" aria-label="Yujiro Hikawa — top">Y.H<i></i></a>
-    <nav class="site-nav mono" aria-label="Primary">
+    <nav class="site-nav mono" aria-label="Primary" data-i18n-aria="aria.nav">
       <a href="#about"><em>01</em><span data-i18n="nav.about"></span></a>
       <a href="#strengths"><em>02</em><span data-i18n="nav.strengths"></span></a>
       <a href="#skills"><em>03</em><span data-i18n="nav.skills"></span></a>
       <a href="#experience"><em>04</em><span data-i18n="nav.experience"></span></a>
       <a href="#contact"><em>05</em><span data-i18n="nav.contact"></span></a>
     </nav>
-    <div class="lang-toggle mono" role="group" aria-label="Language">
+    <div class="lang-toggle mono" role="group" aria-label="Language" data-i18n-aria="aria.lang">
       <button type="button" data-lang="ja">JP</button>
       <span class="lang-sep">/</span>
       <button type="button" data-lang="en">EN</button>
     </div>
-    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" data-i18n-aria="aria.menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span>
       <span></span>
     </button>
   </header>
 
   <div class="mobile-menu" id="mobileMenu" hidden>
-    <nav aria-label="Mobile">
+    <nav aria-label="Mobile" data-i18n-aria="aria.mobileNav">
       <a href="#about"><em class="mono">01</em><span data-i18n="nav.about"></span></a>
       <a href="#strengths"><em class="mono">02</em><span data-i18n="nav.strengths"></span></a>
       <a href="#skills"><em class="mono">03</em><span data-i18n="nav.skills"></span></a>
@@ -154,10 +154,10 @@
         <p data-i18n="about.p2"></p>
       </div>
       <dl class="stats reveal">
-        <div class="stat"><dd data-count="5" data-suffix="+">5+</dd><dt class="mono" data-i18n="about.stat.years"></dt></div>
-        <div class="stat"><dd data-count="15" data-suffix="+">15+</dd><dt class="mono" data-i18n="about.stat.projects"></dt></div>
-        <div class="stat"><dd data-count="10" data-suffix="+">10+</dd><dt class="mono" data-i18n="about.stat.industries"></dt></div>
-        <div class="stat"><dd data-count="10" data-suffix="k+">10k+</dd><dt class="mono" data-i18n="about.stat.users"></dt></div>
+        <div class="stat"><dt class="mono" data-i18n="about.stat.years"></dt><dd data-count="5" data-suffix="+">5+</dd></div>
+        <div class="stat"><dt class="mono" data-i18n="about.stat.projects"></dt><dd data-count="15" data-suffix="+">15+</dd></div>
+        <div class="stat"><dt class="mono" data-i18n="about.stat.industries"></dt><dd data-count="10" data-suffix="+">10+</dd></div>
+        <div class="stat"><dt class="mono" data-i18n="about.stat.users"></dt><dd data-count="10" data-suffix="k+">10k+</dd></div>
       </dl>
     </section>
 
@@ -203,7 +203,7 @@
             <p class="sec-lead" data-i18n="skills.lead"></p>
           </header>
           <div class="radar-wrap reveal">
-            <svg class="radar" viewBox="0 0 260 260" role="img" aria-label="Skill proficiency radar">
+            <svg class="radar" viewBox="0 0 260 260" role="img" aria-label="Skill proficiency radar" data-i18n-aria="aria.radar">
               <g class="radar-grid">
                 <polygon points="130,30 216.6,80 216.6,180 130,230 43.4,180 43.4,80"/>
                 <polygon points="130,50 199.3,90 199.3,170 130,210 60.7,170 60.7,90"/>
@@ -363,11 +363,15 @@
         <span class="sec-no mono">05</span>
         <h2 class="sec-title" data-i18n="contact.title"></h2>
       </header>
-      <p class="contact-line" data-i18n="contact.line" data-split></p>
+      <p class="contact-line" data-i18n="contact.line" data-split="latin"></p>
       <p class="contact-text" data-i18n="contact.text"></p>
+      <div class="contact-mail reveal">
+        <a class="mail-address" href="mailto:dev.mobile.yh.ch@gmail.com">dev.mobile.yh.ch@gmail.com</a>
+        <button class="copy-btn mono" type="button" data-copy="dev.mobile.yh.ch@gmail.com"><i aria-hidden="true"></i><span data-i18n="contact.copy"></span></button>
+      </div>
       <div class="contact-links reveal">
-        <a class="btn btn-solid" href="https://github.com/mazemaze" target="_blank" rel="noopener">GitHub<b aria-hidden="true">↗</b></a>
-        <a class="btn btn-ghost" href="mailto:dev.mobile.yh.ch@gmail.com">Email</a>
+        <a class="btn btn-solid" href="mailto:dev.mobile.yh.ch@gmail.com">Email<b aria-hidden="true">→</b></a>
+        <a class="btn btn-ghost" href="https://github.com/mazemaze" target="_blank" rel="noopener">GitHub ↗</a>
         <a class="btn btn-ghost" href="https://www.linkedin.com/in/yujiro-hikawa-97784a20b/" target="_blank" rel="noopener">LinkedIn</a>
         <a class="btn btn-ghost" href="assets/skill-sheet.pdf" download data-i18n="contact.resume"></a>
         <a class="btn btn-ghost" href="skill-match.html" data-i18n="contact.matrix"></a>
@@ -375,7 +379,7 @@
     </section>
   </main>
 
-  <dialog class="reel-dialog" id="reelDialog" aria-label="Showreel">
+  <dialog class="reel-dialog" id="reelDialog" aria-label="Showreel" data-i18n-aria="reel.title">
     <button class="reel-close mono" type="button" id="reelClose"><span data-i18n="reel.close"></span> ✕</button>
     <div class="reel-frame">
       <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
