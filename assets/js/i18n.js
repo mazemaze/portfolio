@@ -17,6 +17,7 @@ const I18N = {
     "hero.cta.work": "View Experience",
     "hero.cta.contact": "Get in Touch",
     "hero.cta.reel": "Play showreel",
+    "hero.available": "Open to new projects from Sep 2026 · Full remote",
     "hud.scroll": "Scroll",
     "hud.top": "Top",
 
@@ -129,6 +130,7 @@ const I18N = {
     "hero.cta.work": "経歴を見る",
     "hero.cta.contact": "お問い合わせ",
     "hero.cta.reel": "ショーリールを再生",
+    "hero.available": "2026年9月からフルリモートで参画可能",
     "hud.scroll": "スクロール",
     "hud.top": "トップ",
 

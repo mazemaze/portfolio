@@ -28,6 +28,11 @@
       word.setAttribute("aria-hidden", "true");
       const chars = splitter ? Array.from(splitter.segment(part), (s) => s.segment) : Array.from(part);
       chars.forEach((c) => {
+        // kinsoku: closing punctuation never starts a line, so it rides with the previous letter
+        if (/^[、。，．・：；？！ー」』）】…ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮ,.!?:;]$/.test(c) && word.lastChild) {
+          word.lastChild.textContent += c;
+          return;
+        }
         const ch = document.createElement("span");
         ch.className = "ch";
         ch.style.setProperty("--i", i++);
