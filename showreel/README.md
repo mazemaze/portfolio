@@ -5,6 +5,8 @@ A 15-second, 1920×1080 / 30 fps motion-design showreel built entirely in code:
 procedural Node synth for the soundtrack. No stock footage, samples, or
 plugins — every frame is a pure function of time, so renders are repeatable.
 
+![Preview](docs/preview.gif)
+
 ![Contact sheet](docs/contact-sheet.jpg)
 
 ## What’s in it
@@ -28,8 +30,8 @@ line (2, 4, 6, 8, 10, 12 s) and the ball’s three bounces land on beats
 ```
 index.html          # the whole composition (one timeline; transitions cross scene boundaries)
 audio/synth.mjs     # procedural soundtrack -> audio/soundtrack.wav -> soundtrack.m4a
-fonts/              # Anybody (variable) + IBM Plex Mono, both SIL OFL (licenses included)
-showreel.mp4        # the rendered reel (H.264 CRF 18, AAC, faststart)
+fonts/              # Anybody (variable, Latin + Latin Extended) + IBM Plex Mono, both SIL OFL
+showreel.mp4        # the rendered reel: H.264 CRF 23 + AAC, faststart, ~11 MB (fits email limits)
 docs/               # contact sheet + preview GIF
 ```
 
@@ -41,16 +43,30 @@ Requires Node 22+ and FFmpeg.
 cd showreel
 npm run dev      # live preview in HyperFrames Studio
 npm run check    # lint + runtime + layout + motion + contrast
-npm run render   # renders/master.mp4 -> showreel.mp4
+npm run render   # HyperFrames master (renders/master.mp4, ~30 MB) -> share encode showreel.mp4
 npm run audio    # re-synthesise the soundtrack
 ```
 
 ### Put your own name on the end card
 
-The end card’s name and role are composition variables (long names auto-fit):
+The end card’s name and role are composition variables. Names up to about 7
+letters stay at full size (250 px); longer names shrink to a 130 px minimum and then wrap
+between words, so the name always stays larger than the role line. Latin and
+Latin Extended letters use the brand font; other scripts (e.g. Japanese) fall back to
+the rendering machine’s system font.
 
 ```sh
 npx --yes hyperframes@0.8.77 render --quality high \
   --variables '{"name":"Your Name","role":"Motion Designer"}' \
   --output renders/your-name.mp4
 ```
+
+## Notes
+
+- **Two encodes:** HyperFrames’ high-quality output is a ~30 MB master. The second
+  pass makes the streamable share file (SSIM 0.98 against the master; the difference
+  isn’t visible at 100% zoom). Keep the master if you need a higher-quality upload.
+- **Fonts:** the `.woff2` files are the unmodified Latin / Latin Extended subsets served
+  by Google Fonts (Anybody v13, IBM Plex Mono v20), bundled so renders work offline.
+  Both are SIL Open Font License 1.1 (see `fonts/OFL-*.txt`); “Plex” is a Reserved
+  Font Name, so don’t modify and redistribute those files under that name.

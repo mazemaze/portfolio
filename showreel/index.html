@@ -18,6 +18,15 @@
         font-weight: 100 900;
         font-stretch: 50% 150%;
         font-display: block;
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: "Anybody";
+        src: url("fonts/Anybody-Variable-LatinExt.woff2") format("woff2");
+        font-weight: 100 900;
+        font-stretch: 50% 150%;
+        font-display: block;
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
       }
       @font-face {
         font-family: "IBM Plex Mono";
@@ -78,6 +87,8 @@
       .mask {
         display: block;
         overflow: hidden;
+        padding: 0.16em 0 0.22em;
+        margin: -0.16em 0 -0.22em;
       }
       .mask > span {
         display: block;
@@ -291,6 +302,7 @@
       }
       .tframe.hot { border-color: #ff4d1f; }
       .tframe span { position: absolute; left: 18px; top: 12px; font-size: 22px; }
+      #s4-tunnel { position: absolute; inset: 0; transform-style: preserve-3d; }
       .ex-wrap { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; }
       .extrude { position: relative; transform-style: preserve-3d; }
       .extrude .layer {
@@ -407,7 +419,8 @@
       #s7-glow { width: 700px; height: 700px; }
       .s7-wrap { position: absolute; inset: 0; padding: 0 160px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
       .s7-meta { color: #8f897f; }
-      .name { font-weight: 900; font-size: 250px; line-height: 0.86; letter-spacing: -0.02em; font-variation-settings: "wdth" 112; white-space: nowrap; }
+      .name { align-self: flex-start; max-width: 1600px; font-weight: 900; font-size: 250px; line-height: 0.86; letter-spacing: -0.02em; font-variation-settings: "wdth" 112; white-space: nowrap; }
+      .name .nw { white-space: nowrap; }
       .name .ch { display: inline-block; }
       .name .period { display: inline-block; width: 0.2em; height: 0.2em; margin-left: 0.06em; }
       .role { font-weight: 300; font-size: 64px; line-height: 1.1; font-variation-settings: "wdth" 100; }
@@ -417,7 +430,7 @@
       .chip i { width: 12px; height: 12px; background: #ff4d1f; display: block; }
       .s7-code { color: #8f897f; }
       #iris2 { z-index: 60; }
-      #grain { position: absolute; inset: 0; z-index: 90; opacity: 0.05; pointer-events: none; }
+      #grain { position: absolute; inset: 0; z-index: 90; opacity: 0.035; pointer-events: none; }
     </style>
   </head>
   <body>
@@ -484,7 +497,7 @@
                 <span class="mask"><span id="s3-l1">Built on</span></span>
                 <span class="mask"><span id="s3-l2">rhythm.</span></span>
               </div>
-              <div class="code" id="s3-code"><div>tl.to(cells, {</div><div>  <span class="k">rotate:</span> <span class="v">90</span>,</div><div>  <span class="k">stagger:</span> {</div><div>    <span class="k">grid:</span> [<span class="v">6</span>, <span class="v">8</span>],</div><div>    <span class="k">from:</span> <span class="v">"center"</span>,</div><div>    <span class="k">amount:</span> <span class="v">0.4</span> }</div><div>}, <span class="v">"+=0.5"</span>)</div></div>
+              <div class="code" id="s3-code"><div>tl.to(shapes, {</div><div>  <span class="k">rotation:</span> <span class="v">90</span>,</div><div>  <span class="k">stagger:</span> {</div><div>    <span class="k">grid:</span> [<span class="v">6</span>, <span class="v">8</span>],</div><div>    <span class="k">from:</span> <span class="v">"start"</span>,</div><div>    <span class="k">amount:</span> <span class="v">0.3</span> }</div><div>}, <span class="v">4.5</span>)</div></div>
               <div class="beats" id="s3-beats"><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="mono">120 BPM</div></div>
             </div>
             <div class="s3-grid" id="s3-grid"></div>
@@ -648,6 +661,7 @@
     </div>
 
     <script>
+      window.__timelines = window.__timelines || {};
       (function () {
         const INK = "#0D0C11";
         const BONE = "#F2EDE4";
@@ -805,10 +819,38 @@
           gsap.set("#iris2", { width: IR, height: IR, left: bx - IR / 2, top: by - IR / 2 });
 
           const nameEl = $("#name");
-          nameEl.innerHTML = NAME.split("").map((c) => '<span class="ch">' + (c === " " ? "&nbsp;" : c) + "</span>").join("") + '<span class="period" id="period"></span>';
+          const graphemes = (w) =>
+            typeof Intl !== "undefined" && Intl.Segmenter ? Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(w), (g) => g.segment) : Array.from(w);
+          const words = NAME.split(/\s+/).filter(Boolean);
+          words.forEach((w, wi) => {
+            const wordEl = document.createElement("span");
+            wordEl.className = "nw";
+            graphemes(w).forEach((g) => {
+              const ch = document.createElement("span");
+              ch.className = "ch";
+              ch.textContent = g;
+              wordEl.appendChild(ch);
+            });
+            if (wi === words.length - 1) {
+              const per = document.createElement("span");
+              per.className = "period";
+              per.id = "period";
+              wordEl.appendChild(per);
+            }
+            nameEl.appendChild(wordEl);
+            if (wi < words.length - 1) nameEl.appendChild(document.createTextNode(" "));
+          });
           $("#role").textContent = ROLE;
-          const nw = nameEl.scrollWidth;
-          if (nw > 1500) nameEl.style.fontSize = Math.floor(250 * (1500 / nw)) + "px";
+          // fit: one line down to 130px, then wrap at spaces; shrink further only for one huge word
+          const MAXW = 1500, MINF = 130;
+          const oneLine = nameEl.scrollWidth;
+          let fs = Math.min(250, 250 * (MAXW / oneLine));
+          if (fs < MINF) {
+            fs = MINF;
+            nameEl.style.whiteSpace = "normal";
+          }
+          nameEl.style.fontSize = Math.floor(fs) + "px";
+          if (nameEl.scrollWidth > MAXW) nameEl.style.fontSize = Math.floor(fs * (MAXW / nameEl.scrollWidth)) + "px";
           const pr = $("#period").getBoundingClientRect();
           const pcx = pr.left + pr.width / 2, pcy = pr.top + pr.height / 2;
           const pSize = pr.width;
@@ -821,7 +863,7 @@
 
         function build() {
           const vars = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
-          const NAME = String(vars.name || "CLAUDE").toUpperCase();
+          const NAME = String(vars.name || "").trim().toUpperCase() || "CLAUDE";
           const ROLE = String(vars.role || "Motion Designer & Creative Coder");
 
           const { cells, shapes, altR, altBg, zi, ctx, P, ringLen, bx, by, IR, pcx, pcy, pSize } = setup(NAME, ROLE);
@@ -855,7 +897,7 @@
           const pad = (n, w = 2) => String(n).padStart(w, "0");
           const clock = { t: 0 };
           const drawClock = () => {
-            const f = Math.min(449, Math.floor(clock.t * 30 + 1e-6));
+            const f = Math.min(449, Math.round(clock.t * 30));
             tcEl.textContent = "00:00:" + pad(Math.floor(f / 30)) + ":" + pad(f % 30);
             fcEl.textContent = "F " + pad(f, 3) + " / 450";
           };
@@ -872,7 +914,7 @@
             tk.style.left = (560 * s) / 15 - 1 + "px";
             $("#prog").appendChild(tk);
           });
-          tl.to("#rec-dot", { opacity: 0.2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 27 }, 0.5);
+          tl.to("#rec-dot", { opacity: 0.2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: Math.max(0, Math.floor((15 - 0.5) / 0.25) - 1) }, 0.5);
           // chapter roller
           [2, 4, 6, 8, 10, 12].forEach((s, i) => tl.to("#chap-list", { y: -28 * (i + 1), duration: 0.4, ease: "expo.inOut" }, s - 0.15));
           // HUD flips to ink while the frame is signal-orange
@@ -948,8 +990,8 @@
           tl.fromTo("#s1-floor", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "expo.out" }, 0.1);
           tl.fromTo("#s1-ticks", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 0.3);
           tl.fromTo("#s1-meta", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "steps(24)" }, 0.2);
-          tl.fromTo("#s1-l1", { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, 0.25);
-          tl.fromTo("#s1-l2", { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, 0.36);
+          tl.fromTo("#s1-l1", { yPercent: 150 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, 0.25);
+          tl.fromTo("#s1-l2", { yPercent: 150 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, 0.36);
           tl.fromTo("#s1-dot", { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(4)" }, 1.0);
           [["#co1", T1], ["#co2", T2], ["#co3", T3]].forEach(([sel, at], i) => {
             tl.fromTo(sel + " i", { scaleY: 0 }, { scaleY: 1, duration: 0.14, ease: "power2.out" }, at);
@@ -1014,8 +1056,8 @@
             b.style.left = i * 240 + "px";
             $("#blocks").appendChild(b);
             const from = i % 2 ? 1080 : -1080;
-            tl.set(b, { opacity: 1, y: from }, 3.66);
-            tl.to(b, { y: 0, duration: 0.16, ease: "power2.in" }, 3.66 + i * 0.025);
+            tl.set(b, { opacity: 1, y: from }, 3.6);
+            tl.to(b, { y: 0, duration: 0.15, ease: "power2.in" }, 3.6 + i * 0.022);
             tl.set(b, { opacity: 0 }, 4.0);
           }
 
@@ -1027,8 +1069,8 @@
           tl.to(shapes, { borderRadius: (i) => altR[i], backgroundColor: (i) => altBg[i], duration: 0.45, ease: "expo.inOut", stagger: { grid: [6, 8], from: "end", amount: 0.3 } }, 5.0);
           tl.to(shapes, { keyframes: [{ scale: 0.45, duration: 0.14, ease: "power2.in" }, { scale: 1, duration: 0.32, ease: "back.out(3)" }], stagger: { grid: [6, 8], from: zi, amount: 0.24 } }, 5.46);
           tl.fromTo("#s3-kicker", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 4.06);
-          tl.fromTo("#s3-l1", { yPercent: 105 }, { yPercent: 0, duration: 0.6, ease: "expo.out" }, 4.1);
-          tl.fromTo("#s3-l2", { yPercent: 105 }, { yPercent: 0, duration: 0.6, ease: "power4.out" }, 4.2);
+          tl.fromTo("#s3-l1", { yPercent: 150 }, { yPercent: 0, duration: 0.6, ease: "expo.out" }, 4.1);
+          tl.fromTo("#s3-l2", { yPercent: 150 }, { yPercent: 0, duration: 0.6, ease: "power4.out" }, 4.2);
           tl.fromTo("#s3-code > div", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.3, ease: "circ.out", stagger: 0.045 }, 4.3);
           tl.fromTo("#s3-beats", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 4.0);
           $$("#s3-beats .sq").forEach((sq, k) => {
@@ -1083,7 +1125,9 @@
             ex.appendChild(l);
           }
           tl.fromTo("#s4-stage", { scale: 0.62, filter: "blur(12px)" }, { scale: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 6.0);
-          tl.fromTo("#ex-wrap", { z: -1600, opacity: 0 }, { z: 0, opacity: 1, duration: 0.75, ease: "expo.out" }, 6.05);
+          tl.fromTo("#ex-wrap", { z: -1600 }, { z: 0, duration: 0.75, ease: "expo.out" }, 6.05);
+          // fade the leaves: opacity < 1 on a preserve-3d wrapper would flatten it and pop at 1
+          tl.fromTo("#extrude .layer", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 6.05);
           tl.fromTo(["#extrude", "#gizmo"], { rotationY: -38, rotationX: 16 }, { rotationY: 24, rotationX: -6, duration: 1.9, ease: "sine.inOut" }, 6.0);
           tl.fromTo("#gizmo-wrap", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 6.3);
           tl.fromTo("#s4-info", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 6.28);
@@ -1142,7 +1186,7 @@
           tl.fromTo(".s5-stats > div", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.08 }, 8.12);
           tl.fromTo("#s5-cap", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(30)" }, 8.9);
           tl.fromTo("#s5-glow", { opacity: 0, scale: 0.7 }, { opacity: 0.9, scale: 1.05, duration: 1.2, ease: "sine.inOut" }, 8.2);
-          tl.fromTo("#shock", { attr: { r: 10 }, opacity: 0.9 }, { attr: { r: 1300 }, opacity: 0, duration: 0.55, ease: "power2.out" }, 9.5);
+          tl.fromTo("#shock", { attr: { r: 10 }, opacity: 0.9 }, { attr: { r: 1300 }, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, 9.5);
           tl.to("#s5-ui", { x: -700, filter: "blur(10px)", duration: 0.3, ease: "power3.in" }, 9.72);
           tl.to("#s5-glow", { x: -900, duration: 0.28, ease: "power3.in" }, 9.72);
 
@@ -1152,8 +1196,8 @@
           tl.fromTo("#s6-slide", { x: 900, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 9.84);
           tl.fromTo("#dotgrid", { x: 0, y: 0 }, { x: -40, y: -20, duration: 2.16, ease: "none" }, 9.84);
           tl.fromTo("#s6-kicker", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 9.94);
-          tl.fromTo("#s6-l1", { yPercent: 105 }, { yPercent: 0, duration: 0.55, ease: "expo.out" }, 9.96);
-          tl.fromTo("#s6-l2", { yPercent: 105 }, { yPercent: 0, duration: 0.55, ease: "power4.out" }, 10.05);
+          tl.fromTo("#s6-l1", { yPercent: 150 }, { yPercent: 0, duration: 0.55, ease: "expo.out" }, 9.96);
+          tl.fromTo("#s6-l2", { yPercent: 150 }, { yPercent: 0, duration: 0.55, ease: "power4.out" }, 10.05);
           tl.fromTo("#s6-list > div", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "circ.out", stagger: 0.06 }, 10.3);
           tl.fromTo("#cardA", { x: 280, rotationY: -34, opacity: 0 }, { x: 0, rotationY: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, 9.95);
           tl.fromTo("#cardB", { x: 240, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, 10.03);
@@ -1186,25 +1230,26 @@
           tl.set("#iris2", { left: pcx - IR / 2, top: pcy - IR / 2 }, 12.0);
           tl.to("#iris2", { scale: pSize / IR, duration: 0.62, ease: "power4.out" }, 12.0);
           tl.to("#iris2", { scale: (pSize / IR) * 1.14, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 3 }, 12.66);
-          tl.fromTo("#name .ch", { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "power4.out", stagger: 0.035 }, 12.14);
+          tl.fromTo("#name .ch", { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "power4.out", stagger: { amount: Math.min(0.035 * ($$("#name .ch").length - 1), 0.35) } }, 12.14);
           tl.fromTo("#s7-meta", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(26)" }, 12.3);
           tl.fromTo("#role", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 12.42);
           tl.fromTo("#s7-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "expo.inOut" }, 12.5);
-          tl.fromTo("#chips .chip", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)", stagger: 0.05 }, 12.62);
-          tl.fromTo("#s7-code", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "sine.out" }, 12.95);
-          tl.fromTo(".s7-wrap", { x: 0 }, { x: -18, duration: 2.3, ease: "sine.inOut" }, 12.1);
+          tl.fromTo("#chips .chip", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)", stagger: 0.05 }, 12.55);
+          tl.fromTo("#s7-code", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "sine.out" }, 12.8);
+          tl.fromTo([".s7-wrap", "#iris2"], { x: 0 }, { x: -18, duration: 2.3, ease: "sine.inOut" }, 12.1);
           tl.fromTo("#s7-ghost", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 2.2, ease: "power1.out" }, 12.1);
           tl.fromTo("#s7-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.0, ease: "sine.out" }, 12.3);
           // outro: everything but the dot leaves, then the dot closes the reel
-          tl.to(["#s7-meta", "#name .ch", "#role", "#s7-rule", "#chips", "#s7-code"], { opacity: 0, y: -22, duration: 0.28, ease: "power2.in", stagger: 0.015 }, 14.34);
-          tl.to(["#s7-ghost", "#s7-glow", "#hud"], { opacity: 0, duration: 0.35, ease: "power1.in" }, 14.45);
-          tl.to("#iris2", { scale: 0, duration: 0.2, ease: "back.in(3)" }, 14.78);
+          tl.to(["#s7-meta", "#name .ch", "#role", "#s7-rule", "#chips", "#s7-code"], { opacity: 0, y: -22, duration: 0.25, ease: "power2.in", stagger: { amount: 0.12 } }, 14.45);
+          tl.to(["#s7-ghost", "#s7-glow", "#hud"], { opacity: 0, duration: 0.3, ease: "power1.in" }, 14.5);
+          tl.to("#iris2", { scale: 0, duration: 0.15, ease: "back.in(3)" }, 14.78);
 
           window.__timelines["main"] = tl;
         }
 
         Promise.all([
           document.fonts.load('900 100px "Anybody"'),
+          document.fonts.load('900 100px "Anybody"', "\u0100"),
           document.fonts.load('300 100px "Anybody"'),
           document.fonts.load('500 20px "IBM Plex Mono"'),
           document.fonts.load('400 20px "IBM Plex Mono"'),
