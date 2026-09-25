@@ -423,7 +423,7 @@
       .name .nw { white-space: nowrap; }
       .name .ch { display: inline-block; }
       .name .period { display: inline-block; width: 0.2em; height: 0.2em; margin-left: 0.06em; }
-      .role { font-weight: 300; font-size: 64px; line-height: 1.1; font-variation-settings: "wdth" 100; }
+      .role { font-weight: 300; font-size: 64px; line-height: 1.1; font-variation-settings: "wdth" 100; text-wrap: balance; }
       .s7-rule { width: 1600px; height: 3px; background: rgba(242, 237, 228, 0.35); transform-origin: 0 50%; margin-top: 18px; }
       .chips { display: flex; flex-wrap: wrap; gap: 14px 40px; }
       .chip { display: flex; align-items: center; gap: 12px; }
@@ -850,7 +850,9 @@
             nameEl.style.whiteSpace = "normal";
           }
           nameEl.style.fontSize = Math.floor(fs) + "px";
-          if (nameEl.scrollWidth > MAXW) nameEl.style.fontSize = Math.floor(fs * (MAXW / nameEl.scrollWidth)) + "px";
+          // only a single word wider than the column forces a further shrink
+          const widest = Math.max(...Array.from(nameEl.querySelectorAll(".nw"), (e) => e.getBoundingClientRect().width));
+          if (widest > MAXW) nameEl.style.fontSize = Math.floor(fs * (MAXW / widest)) + "px";
           const pr = $("#period").getBoundingClientRect();
           const pcx = pr.left + pr.width / 2, pcy = pr.top + pr.height / 2;
           const pSize = pr.width;
@@ -919,7 +921,7 @@
           [2, 4, 6, 8, 10, 12].forEach((s, i) => tl.to("#chap-list", { y: -28 * (i + 1), duration: 0.4, ease: "expo.inOut" }, s - 0.15));
           // HUD flips to ink while the frame is signal-orange
           tl.to("#hud", { "--hud": INK, "--rec": INK, duration: 0.12, ease: "none" }, 1.86);
-          tl.to("#hud", { "--hud": BONE, "--rec": SIG, duration: 0.12, ease: "none" }, 3.86);
+          tl.to("#hud", { "--hud": BONE, "--rec": SIG, duration: 0.12, ease: "none" }, 3.72);
           tl.to("#hud", { "--hud": INK, "--rec": INK, duration: 0.12, ease: "none" }, 11.84);
           tl.to("#hud", { "--hud": BONE, "--rec": SIG, duration: 0.2, ease: "none" }, 12.12);
 

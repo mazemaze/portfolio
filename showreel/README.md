@@ -51,7 +51,8 @@ npm run audio    # re-synthesise the soundtrack
 
 The end card’s name and role are composition variables. Names up to about 7
 letters stay at full size (250 px); longer names shrink to a 130 px minimum and then wrap
-between words, so the name always stays larger than the role line. Latin and
+between words, which keeps the name larger than the role line. Only a single word too
+long for one line at 130 px shrinks further. Latin and
 Latin Extended letters use the brand font; other scripts (e.g. Japanese) fall back to
 the rendering machine’s system font.
 
