@@ -563,6 +563,27 @@ html[lang="ja"] .tl-role { letter-spacing: 0.1em; text-transform: none; }
   color: var(--muted);
 }
 
+/* ---------- Showreel ---------- */
+
+.reel {
+  margin: 0;
+}
+
+.reel-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 1px solid var(--line);
+}
+
+.reel-caption {
+  margin-top: 14px;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
 /* ---------- Reveal animation ---------- */
 
 .reveal {

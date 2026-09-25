@@ -17,6 +17,11 @@ const I18N = {
     "hero.cta.work": "View Experience",
     "hero.cta.contact": "Get in Touch",
 
+    "reel.title": "Showreel",
+    "reel.lead": "My work in fifteen seconds.",
+    "reel.caption": "15 s · with sound · built in code with HTML + GSAP",
+    "reel.aria": "Showreel: Yujiro Hikawa, full-stack engineer, in 15 seconds",
+
     "about.title": "About",
     "about.lead": "An engineer who ships — from requirements to release, and everything after.",
     "about.p1": "After working in contracted development and freelancing, I became the development lead and lead engineer for an app with tens of thousands of users, overseeing the engineering department while contributing to a wide range of projects on the side.",
@@ -114,6 +119,11 @@ const I18N = {
     "hero.tagline": "0から1を生み出し、数万人に届ける。",
     "hero.cta.work": "経歴を見る",
     "hero.cta.contact": "お問い合わせ",
+
+    "reel.title": "ショーリール",
+    "reel.lead": "15秒でわかる、私の仕事。",
+    "reel.caption": "15秒 · 音声あり · HTML + GSAPでコードから制作",
+    "reel.aria": "ショーリール：フルスタックエンジニア ヒカワ ユウジロウを15秒で紹介",
 
     "about.title": "私について",
     "about.lead": "要件定義からリリース、その先の運用まで。完走するエンジニア。",
@@ -231,6 +241,17 @@ const I18N = {
     if (ogTitle) ogTitle.setAttribute("content", document.title);
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc && desc) ogDesc.setAttribute("content", desc);
+    const reel = document.getElementById("reelVideo");
+    if (reel) {
+      const suffix = lang === "ja" ? "Ja" : "En";
+      const src = reel.dataset["src" + suffix];
+      if (reel.getAttribute("src") !== src) {
+        reel.pause();
+        reel.setAttribute("src", src);
+        reel.setAttribute("poster", reel.dataset["poster" + suffix]);
+      }
+      reel.setAttribute("aria-label", dict["reel.aria"]);
+    }
     buttons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
     localStorage.setItem(STORAGE_KEY, lang);
   }
