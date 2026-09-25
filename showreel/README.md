@@ -45,7 +45,7 @@ npm run dev      # live preview in HyperFrames Studio
 npm run check    # lint + runtime + layout + motion + contrast
 npm run render   # HyperFrames master (renders/master.mp4, ~30 MB) -> share encode showreel.mp4
 npm run audio    # re-synthesise the soundtrack
-npm run verify   # machine check of showreel.mp4: 1920x1080/30fps/450 frames/15 s, audio on the beat grid, HyperFrames gates
+npm run verify   # machine check of showreel.mp4: 1920x1080/30fps/450 frames/15 s, audio hits on the 2 s beat grid, HyperFrames gates
 ```
 
 ### Put your own name on the end card

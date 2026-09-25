@@ -18,7 +18,9 @@ a=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv
 [ "$a" = "aac" ] || fail "audio stream is '$a', expected aac"
 echo "ok  video: 1920x1080, 30 fps, 450 frames, ${d}s, AAC audio"
 
-# 2. Audio hits land on the visual beats (bounces + every scene cut), within 20 ms
+# 2. Audio hits sit on the 120 BPM grid the picture is built on (bounces at 0.5/1/1.5 s and every
+#    2 s cut), within 20 ms. This checks audio against the clock, not against the picture:
+#    HyperFrames muxes both from one timeline, so they cannot drift apart on their own.
 ffmpeg -loglevel error -i "$f" -vn -ac 1 -ar 8000 -f s16le - | python3 -c '
 import struct, sys
 data = sys.stdin.buffer.read()
@@ -37,10 +39,14 @@ print("ok  audio: hits at 0.5/1/1.5 s and every cut (2-12 s) within 20 ms")
 '
 
 # 3. HyperFrames gates: lint, runtime, layout, motion, WCAG contrast
-out=$(npx --yes hyperframes@0.8.77 check --json --samples 9 2>/dev/null) || fail "hyperframes check did not run"
+# check exits 1 when it finds problems, so read its JSON verdict rather than the exit code
+out=$(npx --yes hyperframes@0.8.77 check --json --samples 9 2>/dev/null) || true
 echo "$out" | python3 -c '
 import json, sys
-r = json.load(sys.stdin)
+try:
+    r = json.load(sys.stdin)
+except ValueError:
+    sys.exit("FAIL: hyperframes check did not run (no JSON output)")
 if not r.get("ok"):
     sys.exit("FAIL: hyperframes check reported errors (run npm run check for details)")
 print("ok  hyperframes check: no errors")
