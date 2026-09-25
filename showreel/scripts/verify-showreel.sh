@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Machine checks for the showreel deliverable. Run after every render:
-#   showreel/scripts/verify.sh
+#   showreel/scripts/verify-showreel.sh
 # Exits non-zero with a FAIL line if the video or composition is off-spec.
 set -euo pipefail
 cd "$(dirname "$0")/.."
