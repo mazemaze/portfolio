@@ -16,9 +16,19 @@ const I18N = {
     "hero.tagline": "I take products from zero to one — and to tens of thousands of users.",
     "hero.cta.work": "View Experience",
     "hero.cta.contact": "Get in Touch",
+    "hero.cta.reel": "Play showreel",
+    "hud.scroll": "Scroll",
+    "hud.top": "Top",
 
     "reel.title": "Showreel",
     "reel.lead": "My work in fifteen seconds.",
+    "reel.watch": "Watch with sound",
+    "reel.other": "日本語版",
+    "reel.pause": "Pause",
+    "reel.play": "Play",
+    "reel.close": "Close",
+    "reel.error": "The video couldn't load.",
+    "reel.download": "Download it instead",
     "reel.caption": "15 s · with sound · built in code with HTML + GSAP",
 
     "about.title": "About",
@@ -118,9 +128,19 @@ const I18N = {
     "hero.tagline": "0から1を生み出し、数万人に届ける。",
     "hero.cta.work": "経歴を見る",
     "hero.cta.contact": "お問い合わせ",
+    "hero.cta.reel": "ショーリールを再生",
+    "hud.scroll": "スクロール",
+    "hud.top": "トップ",
 
     "reel.title": "ショーリール",
     "reel.lead": "15秒でわかる、私の仕事。",
+    "reel.watch": "音声付きで観る",
+    "reel.other": "English version",
+    "reel.pause": "一時停止",
+    "reel.play": "再生",
+    "reel.close": "閉じる",
+    "reel.error": "動画を読み込めませんでした。",
+    "reel.download": "ダウンロードして観る",
     "reel.caption": "15秒 · 音声あり · HTML + GSAPでコードから制作",
 
     "about.title": "私について",
@@ -245,6 +265,7 @@ const I18N = {
     });
     buttons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
     localStorage.setItem(STORAGE_KEY, lang);
+    document.dispatchEvent(new CustomEvent("i18n:change", { detail: { lang, dict } }));
   }
 
   function apply(lang, instant) {

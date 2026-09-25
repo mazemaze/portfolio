@@ -33,34 +33,41 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/signal.css" />
+  <noscript><style>.is-booting .boot, .is-booting .hero-name, .is-booting .hud, .reveal, .sec-head.reveal .sec-title, .sec-head.reveal .sec-no, .sec-head.reveal .sec-lead, .contact-line .ch { opacity: 1 !important; transform: none !important; clip-path: none !important; }</style></noscript>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
+        "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js"
       }
     }
   </script>
 </head>
-<body>
+<body class="is-booting">
   <canvas id="gl" aria-hidden="true"></canvas>
-  <div class="vignette" aria-hidden="true"></div>
+  <div class="shade" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Camera HUD: corner marks, progress, current chapter -->
+  <div class="hud" aria-hidden="true">
+    <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
+    <div class="hud-chapter mono"><span class="rec"></span><span id="hudChapter">00 · Showreel</span></div>
+    <div class="hud-scroll mono"><span data-i18n="hud.scroll"></span> <b id="hudPct">000</b></div>
+  </div>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-  <div class="veil" id="veil" aria-hidden="true"></div>
 
   <header class="site-header" id="siteHeader">
-    <a class="brand" href="#top">Y.H.</a>
-    <nav class="site-nav" aria-label="Primary">
-      <a href="#about" data-i18n="nav.about"></a>
-      <a href="#strengths" data-i18n="nav.strengths"></a>
-      <a href="#skills" data-i18n="nav.skills"></a>
-      <a href="#experience" data-i18n="nav.experience"></a>
-      <a href="#contact" data-i18n="nav.contact"></a>
+    <a class="brand" href="#top" aria-label="Yujiro Hikawa — top">Y.H<i></i></a>
+    <nav class="site-nav mono" aria-label="Primary">
+      <a href="#about"><em>01</em><span data-i18n="nav.about"></span></a>
+      <a href="#strengths"><em>02</em><span data-i18n="nav.strengths"></span></a>
+      <a href="#skills"><em>03</em><span data-i18n="nav.skills"></span></a>
+      <a href="#experience"><em>04</em><span data-i18n="nav.experience"></span></a>
+      <a href="#contact"><em>05</em><span data-i18n="nav.contact"></span></a>
     </nav>
-    <div class="lang-toggle" role="group" aria-label="Language">
+    <div class="lang-toggle mono" role="group" aria-label="Language">
       <button type="button" data-lang="ja">JP</button>
       <span class="lang-sep">/</span>
       <button type="button" data-lang="en">EN</button>
@@ -73,116 +80,111 @@
 
   <div class="mobile-menu" id="mobileMenu" hidden>
     <nav aria-label="Mobile">
-      <a href="#about" data-i18n="nav.about"></a>
-      <a href="#strengths" data-i18n="nav.strengths"></a>
-      <a href="#skills" data-i18n="nav.skills"></a>
-      <a href="#experience" data-i18n="nav.experience"></a>
-      <a href="#contact" data-i18n="nav.contact"></a>
+      <a href="#about"><em class="mono">01</em><span data-i18n="nav.about"></span></a>
+      <a href="#strengths"><em class="mono">02</em><span data-i18n="nav.strengths"></span></a>
+      <a href="#skills"><em class="mono">03</em><span data-i18n="nav.skills"></span></a>
+      <a href="#experience"><em class="mono">04</em><span data-i18n="nav.experience"></span></a>
+      <a href="#contact"><em class="mono">05</em><span data-i18n="nav.contact"></span></a>
     </nav>
   </div>
 
   <main id="top">
     <!-- Hero -->
     <section class="hero" id="hero">
-      <p class="hero-kicker reveal" data-i18n="hero.kicker"></p>
-      <h1 class="hero-name reveal" data-i18n="hero.name"></h1>
-      <p class="hero-role reveal" data-i18n="hero.role"></p>
-      <p class="hero-tagline reveal" data-i18n="hero.tagline"></p>
-      <div class="hero-cta reveal">
-        <a class="btn btn-solid" href="#experience" data-i18n="hero.cta.work"></a>
+      <p class="kicker mono boot"><span class="rec"></span><span data-i18n="hero.kicker"></span></p>
+      <h1 class="hero-name" data-i18n="hero.name" data-split></h1>
+      <p class="hero-role mono boot" data-i18n="hero.role"></p>
+      <p class="hero-tagline boot" data-i18n="hero.tagline"></p>
+      <div class="hero-cta boot">
+        <a class="btn btn-solid" href="#experience"><span data-i18n="hero.cta.work"></span><b aria-hidden="true">→</b></a>
         <a class="btn btn-ghost" href="#contact" data-i18n="hero.cta.contact"></a>
+        <button class="btn btn-play" type="button" data-play-reel><i aria-hidden="true"></i><span data-i18n="hero.cta.reel"></span></button>
       </div>
-      <a class="scroll-badge" href="#about" aria-label="Scroll down">
-        <svg viewBox="0 0 100 100" aria-hidden="true">
-          <defs>
-            <path id="badgeCircle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
-          </defs>
-          <text class="badge-ring">
-            <textPath href="#badgeCircle">SCROLL DOWN ◆ SCROLL DOWN ◆ </textPath>
-          </text>
-        </svg>
-        <span class="badge-arrow" aria-hidden="true"></span>
-      </a>
+      <a class="scroll-cue mono boot" href="#showreel"><span data-i18n="hud.scroll"></span><i aria-hidden="true"></i></a>
     </section>
 
-    <!-- Tech marquee -->
+    <!-- Stack marquee -->
     <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>TypeScript</span><i>◆</i><span>Go</span><i>◆</i><span>Flutter</span><i>◆</i><span>Swift</span><i>◆</i><span>Kotlin</span><i>◆</i><span>React</span><i>◆</i><span>Next.js</span><i>◆</i><span>Python</span><i>◆</i><span>AWS</span><i>◆</i><span>Firebase</span><i>◆</i><span>OpenAI API</span><i>◆</i><span>GraphQL</span><i>◆</i><span>Solidity</span><i>◆</i><span>Docker</span><i>◆</i>
-        <span>TypeScript</span><i>◆</i><span>Go</span><i>◆</i><span>Flutter</span><i>◆</i><span>Swift</span><i>◆</i><span>Kotlin</span><i>◆</i><span>React</span><i>◆</i><span>Next.js</span><i>◆</i><span>Python</span><i>◆</i><span>AWS</span><i>◆</i><span>Firebase</span><i>◆</i><span>OpenAI API</span><i>◆</i><span>GraphQL</span><i>◆</i><span>Solidity</span><i>◆</i><span>Docker</span><i>◆</i>
-      </div>
+      <div class="marquee-row"><span>TypeScript</span><i>—</i> <span>Go</span><i>—</i> <span>Flutter</span><i>—</i> <span>Swift</span><i>—</i> <span>Kotlin</span><i>—</i> <span>React</span><i>—</i> <span>Next.js</span><i>—</i> <span>Python</span><i>—</i> <span>AWS</span><i>—</i> <span>Firebase</span><i>—</i> <span>OpenAI API</span><i>—</i> <span>Claude API</span><i>—</i> <span>Solidity</span><i>—</i> <span>Docker</span><i>—</i> <span>TypeScript</span><i>—</i> <span>Go</span><i>—</i> <span>Flutter</span><i>—</i> <span>Swift</span><i>—</i> <span>Kotlin</span><i>—</i> <span>React</span><i>—</i> <span>Next.js</span><i>—</i> <span>Python</span><i>—</i> <span>AWS</span><i>—</i> <span>Firebase</span><i>—</i> <span>OpenAI API</span><i>—</i> <span>Claude API</span><i>—</i> <span>Solidity</span><i>—</i> <span>Docker</span><i>—</i></div>
+      <div class="marquee-row rev"><span>TypeScript</span><i>—</i> <span>Go</span><i>—</i> <span>Flutter</span><i>—</i> <span>Swift</span><i>—</i> <span>Kotlin</span><i>—</i> <span>React</span><i>—</i> <span>Next.js</span><i>—</i> <span>Python</span><i>—</i> <span>AWS</span><i>—</i> <span>Firebase</span><i>—</i> <span>OpenAI API</span><i>—</i> <span>Claude API</span><i>—</i> <span>Solidity</span><i>—</i> <span>Docker</span><i>—</i> <span>TypeScript</span><i>—</i> <span>Go</span><i>—</i> <span>Flutter</span><i>—</i> <span>Swift</span><i>—</i> <span>Kotlin</span><i>—</i> <span>React</span><i>—</i> <span>Next.js</span><i>—</i> <span>Python</span><i>—</i> <span>AWS</span><i>—</i> <span>Firebase</span><i>—</i> <span>OpenAI API</span><i>—</i> <span>Claude API</span><i>—</i> <span>Solidity</span><i>—</i> <span>Docker</span><i>—</i></div>
     </div>
 
     <!-- Showreel -->
     <section class="section" id="showreel">
-      <h2 class="section-title reveal"><span class="section-num">00</span><span data-i18n="reel.title"></span></h2>
-      <p class="section-lead reveal" data-i18n="reel.lead"></p>
+      <header class="sec-head reveal">
+        <span class="sec-no mono">00</span>
+        <h2 class="sec-title" data-i18n="reel.title"></h2>
+        <p class="sec-lead" data-i18n="reel.lead"></p>
+      </header>
       <figure class="reel reveal">
-        <video
-          class="reel-video"
-          lang="en"
-          src="showreel/showreel.mp4"
-          poster="showreel/docs/poster-en.jpg"
-          aria-label="Showreel: Yujiro Hikawa, full-stack engineer, in 15 seconds"
-          controls
-          playsinline
-          preload="none"
-        ></video>
-        <video
-          class="reel-video"
-          lang="ja"
-          src="showreel/showreel-ja.mp4"
-          poster="showreel/docs/poster-ja.jpg"
-          aria-label="ショーリール：フルスタックエンジニア ヒカワ ユウジロウを15秒で紹介"
-          controls
-          playsinline
-          preload="none"
-        ></video>
-        <figcaption class="reel-caption" data-i18n="reel.caption"></figcaption>
+        <div class="devices" id="reelDevices">
+          <div class="device laptop">
+            <div class="device-screen">
+              <video class="loop" lang="en" src="showreel/docs/loop-en.mp4" poster="showreel/docs/poster-en.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+              <video class="loop" lang="ja" src="showreel/docs/loop-ja.mp4" poster="showreel/docs/poster-ja.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+              <button class="reel-watch" type="button" data-play-reel><i aria-hidden="true"></i><span data-i18n="reel.watch"></span></button>
+            </div>
+            <div class="laptop-base" aria-hidden="true"></div>
+          </div>
+          <div class="device phone" aria-hidden="true">
+            <div class="device-screen">
+              <video class="loop alt" lang="en" src="showreel/docs/loop-en.mp4" poster="showreel/docs/poster-en.jpg" muted loop playsinline preload="none"></video>
+              <video class="loop alt" lang="ja" src="showreel/docs/loop-ja.mp4" poster="showreel/docs/poster-ja.jpg" muted loop playsinline preload="none"></video>
+            </div>
+            <span class="device-tag mono" data-i18n="reel.other"></span>
+          </div>
+        </div>
+        <figcaption class="reel-caption mono">
+          <span data-i18n="reel.caption"></span>
+          <button class="reel-pause" type="button" id="reelPause" aria-pressed="false"><i aria-hidden="true"></i><span data-i18n="reel.pause"></span></button>
+        </figcaption>
       </figure>
     </section>
 
     <!-- About -->
     <section class="section" id="about">
-      <h2 class="section-title reveal"><span class="section-num">01</span><span data-i18n="about.title"></span></h2>
-      <p class="section-lead reveal" data-i18n="about.lead"></p>
+      <header class="sec-head reveal">
+        <span class="sec-no mono">01</span>
+        <h2 class="sec-title" data-i18n="about.title"></h2>
+        <p class="sec-lead" data-i18n="about.lead"></p>
+      </header>
       <div class="about-grid">
-        <p class="reveal" data-i18n="about.p1"></p>
-        <p class="reveal" data-i18n="about.p2"></p>
+        <p data-i18n="about.p1"></p>
+        <p data-i18n="about.p2"></p>
       </div>
       <dl class="stats reveal">
-        <div class="stat"><dt data-i18n="about.stat.years"></dt><dd>5+</dd></div>
-        <div class="stat"><dt data-i18n="about.stat.projects"></dt><dd>15+</dd></div>
-        <div class="stat"><dt data-i18n="about.stat.industries"></dt><dd>10+</dd></div>
-        <div class="stat"><dt data-i18n="about.stat.users"></dt><dd>10k+</dd></div>
+        <div class="stat"><dd data-count="5" data-suffix="+">5+</dd><dt class="mono" data-i18n="about.stat.years"></dt></div>
+        <div class="stat"><dd data-count="15" data-suffix="+">15+</dd><dt class="mono" data-i18n="about.stat.projects"></dt></div>
+        <div class="stat"><dd data-count="10" data-suffix="+">10+</dd><dt class="mono" data-i18n="about.stat.industries"></dt></div>
+        <div class="stat"><dd data-count="10" data-suffix="k+">10k+</dd><dt class="mono" data-i18n="about.stat.users"></dt></div>
       </dl>
     </section>
 
     <!-- Strengths -->
     <section class="section" id="strengths">
-      <h2 class="section-title reveal"><span class="section-num">02</span><span data-i18n="strengths.title"></span></h2>
-      <p class="section-lead reveal" data-i18n="strengths.lead"></p>
-      <div class="strength-grid">
-        <article class="strength-card reveal" data-tilt>
-          <span class="strength-num" aria-hidden="true">01</span>
-          <div class="strength-visual">
-            <canvas class="mini-gl" data-shape="layers" aria-hidden="true"></canvas>
+      <header class="sec-head reveal">
+        <span class="sec-no mono">02</span>
+        <h2 class="sec-title" data-i18n="strengths.title"></h2>
+        <p class="sec-lead" data-i18n="strengths.lead"></p>
+      </header>
+      <div class="strengths">
+        <article class="strength reveal">
+          <div class="strength-top"><span class="mono">01</span>
+            <svg class="glyph g-cycle" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="44"/><circle class="orb" cx="60" cy="16" r="7"/><path d="M60 30v60M30 60h60"/></svg>
           </div>
           <h3 data-i18n="strengths.1.title"></h3>
           <p data-i18n="strengths.1.desc"></p>
         </article>
-        <article class="strength-card reveal" data-tilt>
-          <span class="strength-num" aria-hidden="true">02</span>
-          <div class="strength-visual">
-            <canvas class="mini-gl" data-shape="orbit" aria-hidden="true"></canvas>
+        <article class="strength reveal">
+          <div class="strength-top"><span class="mono">02</span>
+            <svg class="glyph g-launch" viewBox="0 0 120 120" aria-hidden="true"><circle class="seed" cx="60" cy="60" r="6"/><circle class="wave w1" cx="60" cy="60" r="20"/><circle class="wave w2" cx="60" cy="60" r="36"/><circle class="wave w3" cx="60" cy="60" r="52"/></svg>
           </div>
           <h3 data-i18n="strengths.2.title"></h3>
           <p data-i18n="strengths.2.desc"></p>
         </article>
-        <article class="strength-card reveal" data-tilt>
-          <span class="strength-num" aria-hidden="true">03</span>
-          <div class="strength-visual">
-            <canvas class="mini-gl" data-shape="neural" aria-hidden="true"></canvas>
+        <article class="strength reveal">
+          <div class="strength-top"><span class="mono">03</span>
+            <svg class="glyph g-neural" viewBox="0 0 120 120" aria-hidden="true"><path d="M20 30L60 60L100 30M20 90L60 60L100 90M20 30L20 90M100 30L100 90"/><circle cx="20" cy="30" r="5"/><circle cx="100" cy="30" r="5"/><circle cx="20" cy="90" r="5"/><circle cx="100" cy="90" r="5"/><circle class="core" cx="60" cy="60" r="9"/></svg>
           </div>
           <h3 data-i18n="strengths.3.title"></h3>
           <p data-i18n="strengths.3.desc"></p>
@@ -192,131 +194,163 @@
 
     <!-- Skills -->
     <section class="section" id="skills">
-      <div class="skills-head">
-        <div class="skills-head-text">
-          <h2 class="section-title reveal"><span class="section-num">03</span><span data-i18n="skills.title"></span></h2>
-          <p class="section-lead reveal" data-i18n="skills.lead"></p>
+      <div class="skills-layout">
+        <div class="skills-side">
+          <header class="sec-head reveal">
+            <span class="sec-no mono">03</span>
+            <h2 class="sec-title" data-i18n="skills.title"></h2>
+            <p class="sec-lead" data-i18n="skills.lead"></p>
+          </header>
+          <div class="radar-wrap reveal">
+            <svg class="radar" viewBox="0 0 260 260" role="img" aria-label="Skill proficiency radar">
+              <g class="radar-grid">
+                <polygon points="130,30 216.6,80 216.6,180 130,230 43.4,180 43.4,80"/>
+                <polygon points="130,50 199.3,90 199.3,170 130,210 60.7,170 60.7,90"/>
+                <polygon points="130,70 182,100 182,160 130,190 78,160 78,100"/>
+                <polygon points="130,90 164.6,110 164.6,150 130,170 95.4,150 95.4,110"/>
+                <polygon points="130,110 147.3,120 147.3,140 130,150 112.7,140 112.7,120"/>
+              </g>
+              <g class="radar-axes">
+                <line x1="130" y1="130" x2="130" y2="30"/><line x1="130" y1="130" x2="216.6" y2="80"/><line x1="130" y1="130" x2="216.6" y2="180"/>
+                <line x1="130" y1="130" x2="130" y2="230"/><line x1="130" y1="130" x2="43.4" y2="180"/><line x1="130" y1="130" x2="43.4" y2="80"/>
+              </g>
+              <g class="radar-shape">
+                <polygon class="radar-poly" points="130,30 213.1,82 216.6,180 130,222 53.8,174 46.9,82"/>
+                <circle cx="130" cy="30" r="3"/><circle cx="213.1" cy="82" r="3"/><circle cx="216.6" cy="180" r="3"/><circle cx="130" cy="222" r="3"/><circle cx="53.8" cy="174" r="3"/><circle cx="46.9" cy="82" r="3"/>
+              </g>
+              <g class="radar-labels">
+                <text x="130" y="14" text-anchor="middle" data-i18n="skills.r.l"></text>
+                <text x="236" y="75" text-anchor="start" data-i18n="skills.r.w"></text>
+                <text x="236" y="193" text-anchor="start" data-i18n="skills.r.m"></text>
+                <text x="130" y="252" text-anchor="middle" data-i18n="skills.r.c"></text>
+                <text x="24" y="193" text-anchor="end" data-i18n="skills.r.a"></text>
+                <text x="24" y="75" text-anchor="end" data-i18n="skills.r.p"></text>
+              </g>
+            </svg>
+          </div>
         </div>
-        <div class="radar-wrap reveal">
-          <svg class="radar" viewBox="0 0 260 260" role="img" aria-label="Skill proficiency radar">
-            <g class="radar-grid">
-              <polygon points="130,30 216.6,80 216.6,180 130,230 43.4,180 43.4,80"/>
-              <polygon points="130,50 199.3,90 199.3,170 130,210 60.7,170 60.7,90"/>
-              <polygon points="130,70 182,100 182,160 130,190 78,160 78,100"/>
-              <polygon points="130,90 164.6,110 164.6,150 130,170 95.4,150 95.4,110"/>
-              <polygon points="130,110 147.3,120 147.3,140 130,150 112.7,140 112.7,120"/>
-            </g>
-            <g class="radar-axes">
-              <line x1="130" y1="130" x2="130" y2="30"/>
-              <line x1="130" y1="130" x2="216.6" y2="80"/>
-              <line x1="130" y1="130" x2="216.6" y2="180"/>
-              <line x1="130" y1="130" x2="130" y2="230"/>
-              <line x1="130" y1="130" x2="43.4" y2="180"/>
-              <line x1="130" y1="130" x2="43.4" y2="80"/>
-            </g>
-            <g class="radar-shape">
-              <polygon class="radar-poly" points="130,30 213.1,82 216.6,180 130,222 53.8,174 46.9,82"/>
-              <circle cx="130" cy="30" r="2.5"/><circle cx="213.1" cy="82" r="2.5"/><circle cx="216.6" cy="180" r="2.5"/><circle cx="130" cy="222" r="2.5"/><circle cx="53.8" cy="174" r="2.5"/><circle cx="46.9" cy="82" r="2.5"/>
-            </g>
-            <g class="radar-labels">
-              <text x="130" y="14" text-anchor="middle" data-i18n="skills.r.l"></text>
-              <text x="238" y="75" text-anchor="start" data-i18n="skills.r.w"></text>
-              <text x="238" y="193" text-anchor="start" data-i18n="skills.r.m"></text>
-              <text x="130" y="250" text-anchor="middle" data-i18n="skills.r.c"></text>
-              <text x="22" y="193" text-anchor="end" data-i18n="skills.r.a"></text>
-              <text x="22" y="75" text-anchor="end" data-i18n="skills.r.p"></text>
-            </g>
-          </svg>
-        </div>
-      </div>
-      <div class="skill-grid">
-        <div class="skill-card reveal" data-idx="01">
-          <h3><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 18 2 12 8 6"/></svg><span data-i18n="skills.g.languages"></span></h3>
+        <div class="skill-grid">
+        <div class="skill reveal">
+          <div class="skill-top"><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 18 2 12 8 6"/></svg><h3 data-i18n="skills.g.languages"></h3><span class="mono skill-no">01</span></div>
           <ul class="chips"><li class="core">TypeScript</li><li class="core">Go</li><li class="core">Dart</li><li>Python</li><li>Swift</li><li>Kotlin</li><li>JavaScript</li><li>HTML / CSS</li><li>SQL</li><li>Solidity</li></ul>
-          <div class="meter" aria-hidden="true"><span style="--level:.95"></span></div>
+          <div class="meter" aria-hidden="true"><span style="--level:0.95"></span></div>
         </div>
-        <div class="skill-card reveal" data-idx="02">
-          <h3><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg><span data-i18n="skills.g.web"></span></h3>
+        <div class="skill reveal">
+          <div class="skill-top"><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg><h3 data-i18n="skills.g.web"></h3><span class="mono skill-no">02</span></div>
           <ul class="chips"><li class="core">React</li><li class="core">Next.js</li><li>Nuxt.js</li><li>Vue.js</li><li class="core">Nest.js</li><li>Gin</li><li>Echo</li><li>FastAPI</li><li>Node.js</li></ul>
-          <div class="meter" aria-hidden="true"><span style="--level:.92"></span></div>
+          <div class="meter" aria-hidden="true"><span style="--level:0.92"></span></div>
         </div>
-        <div class="skill-card reveal" data-idx="03">
-          <h3><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg><span data-i18n="skills.g.mobile"></span></h3>
+        <div class="skill reveal">
+          <div class="skill-top"><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg><h3 data-i18n="skills.g.mobile"></h3><span class="mono skill-no">03</span></div>
           <ul class="chips"><li class="core">Flutter</li><li class="core">React Native</li><li class="core">iOS (Swift)</li><li class="core">Android (Kotlin)</li><li class="core">Android TV</li></ul>
-          <div class="meter" aria-hidden="true"><span style="--level:.96"></span></div>
+          <div class="meter" aria-hidden="true"><span style="--level:0.96"></span></div>
         </div>
-        <div class="skill-card reveal" data-idx="04">
-          <h3><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span data-i18n="skills.g.cloud"></span></h3>
+        <div class="skill reveal">
+          <div class="skill-top"><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><h3 data-i18n="skills.g.cloud"></h3><span class="mono skill-no">04</span></div>
           <ul class="chips"><li class="core">AWS</li><li class="core">Firebase</li><li>Firestore</li><li>MySQL</li><li>PostgreSQL</li><li>DynamoDB</li><li>GraphQL</li></ul>
-          <div class="meter" aria-hidden="true"><span style="--level:.88"></span></div>
+          <div class="meter" aria-hidden="true"><span style="--level:0.88"></span></div>
         </div>
-        <div class="skill-card reveal" data-idx="05">
-          <h3><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 7.1L21 12l-7.1 1.9L12 21l-1.9-7.1L3 12l7.1-1.9z"/></svg><span data-i18n="skills.g.ai"></span></h3>
+        <div class="skill reveal">
+          <div class="skill-top"><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 7.1L21 12l-7.1 1.9L12 21l-1.9-7.1L3 12l7.1-1.9z"/></svg><h3 data-i18n="skills.g.ai"></h3><span class="mono skill-no">05</span></div>
           <ul class="chips"><li class="core">OpenAI API</li><li class="core">Claude API</li><li>Docker</li><li>Git</li><li>GitHub Actions</li><li>CircleCI</li><li>Figma</li></ul>
-          <div class="meter" aria-hidden="true"><span style="--level:.9"></span></div>
+          <div class="meter" aria-hidden="true"><span style="--level:0.9"></span></div>
         </div>
-        <div class="skill-card reveal" data-idx="06">
-          <h3><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg><span data-i18n="skills.g.process"></span></h3>
-          <ul class="chips">
-            <li data-i18n="skills.p.req"></li><li data-i18n="skills.p.basic"></li><li data-i18n="skills.p.detail"></li><li data-i18n="skills.p.impl"></li><li data-i18n="skills.p.test"></li><li data-i18n="skills.p.ops"></li><li data-i18n="skills.p.mgmt"></li>
-          </ul>
-          <div class="meter" aria-hidden="true"><span style="--level:.98"></span></div>
+        <div class="skill reveal">
+          <div class="skill-top"><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg><h3 data-i18n="skills.g.process"></h3><span class="mono skill-no">06</span></div>
+          <ul class="chips"><li data-i18n="skills.p.req"></li><li data-i18n="skills.p.basic"></li><li data-i18n="skills.p.detail"></li><li data-i18n="skills.p.impl"></li><li data-i18n="skills.p.test"></li><li data-i18n="skills.p.ops"></li><li data-i18n="skills.p.mgmt"></li></ul>
+          <div class="meter" aria-hidden="true"><span style="--level:0.98"></span></div>
+        </div>
         </div>
       </div>
-      <p class="skill-note reveal" data-i18n="skills.note"></p>
+      <p class="skill-note mono" data-i18n="skills.note"></p>
     </section>
 
     <!-- Experience -->
     <section class="section" id="experience">
-      <h2 class="section-title reveal"><span class="section-num">04</span><span data-i18n="experience.title"></span></h2>
-      <p class="section-lead reveal" data-i18n="experience.lead"></p>
-      <ol class="timeline">
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2026.06 — 2026.08</span><span class="tl-role" data-i18n="exp.1.role"></span></div>
-          <h3 data-i18n="exp.1.title"></h3>
-          <p data-i18n="exp.1.desc"></p>
+      <header class="sec-head reveal">
+        <span class="sec-no mono">04</span>
+        <h2 class="sec-title" data-i18n="experience.title"></h2>
+        <p class="sec-lead" data-i18n="experience.lead"></p>
+      </header>
+      <ol class="jobs">
+        <li class="job reveal">
+          <span class="job-no mono">01</span>
+          <span class="job-when mono">2026.06 — 2026.08</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.1.title"></h3>
+            <p class="job-role mono" data-i18n="exp.1.role"></p>
+            <p class="job-desc" data-i18n="exp.1.desc"></p>
+          </div>
           <ul class="tags"><li>Nuxt.js</li><li>Nest.js</li><li>TypeScript</li><li>PostgreSQL</li><li>AWS</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2025.09 — 2026.04</span><span class="tl-role" data-i18n="exp.2.role"></span></div>
-          <h3 data-i18n="exp.2.title"></h3>
-          <p data-i18n="exp.2.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">02</span>
+          <span class="job-when mono">2025.09 — 2026.04</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.2.title"></h3>
+            <p class="job-role mono" data-i18n="exp.2.role"></p>
+            <p class="job-desc" data-i18n="exp.2.desc"></p>
+          </div>
           <ul class="tags"><li>Flutter</li><li>Dart</li><li>React</li><li>Firebase</li><li>OpenAI API</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2025.12 — 2026.04</span><span class="tl-role" data-i18n="exp.3.role"></span></div>
-          <h3 data-i18n="exp.3.title"></h3>
-          <p data-i18n="exp.3.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">03</span>
+          <span class="job-when mono">2025.12 — 2026.04</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.3.title"></h3>
+            <p class="job-role mono" data-i18n="exp.3.role"></p>
+            <p class="job-desc" data-i18n="exp.3.desc"></p>
+          </div>
           <ul class="tags"><li>TypeScript</li><li>Python</li><li>Next.js</li><li>Claude API</li><li>Docker</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2025.05 — 2026.04</span><span class="tl-role" data-i18n="exp.4.role"></span></div>
-          <h3 data-i18n="exp.4.title"></h3>
-          <p data-i18n="exp.4.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">04</span>
+          <span class="job-when mono">2025.05 — 2026.04</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.4.title"></h3>
+            <p class="job-role mono" data-i18n="exp.4.role"></p>
+            <p class="job-desc" data-i18n="exp.4.desc"></p>
+          </div>
           <ul class="tags"><li>Flutter</li><li>Dart</li><li>Swift</li><li>MySQL</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2025.09 — 2026.03</span><span class="tl-role" data-i18n="exp.5.role"></span></div>
-          <h3 data-i18n="exp.5.title"></h3>
-          <p data-i18n="exp.5.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">05</span>
+          <span class="job-when mono">2025.09 — 2026.03</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.5.title"></h3>
+            <p class="job-role mono" data-i18n="exp.5.role"></p>
+            <p class="job-desc" data-i18n="exp.5.desc"></p>
+          </div>
           <ul class="tags"><li>Go</li><li>Echo</li><li>React</li><li>TypeScript</li><li>Android TV</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2023.02 — 2023.05</span><span class="tl-role" data-i18n="exp.6.role"></span></div>
-          <h3 data-i18n="exp.6.title"></h3>
-          <p data-i18n="exp.6.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">06</span>
+          <span class="job-when mono">2023.02 — 2023.05</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.6.title"></h3>
+            <p class="job-role mono" data-i18n="exp.6.role"></p>
+            <p class="job-desc" data-i18n="exp.6.desc"></p>
+          </div>
           <ul class="tags"><li>Flutter</li><li>Solidity</li><li>Vue.js</li><li>Node.js</li><li>Firebase</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2021.11 — 2022.10</span><span class="tl-role" data-i18n="exp.7.role"></span></div>
-          <h3 data-i18n="exp.7.title"></h3>
-          <p data-i18n="exp.7.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">07</span>
+          <span class="job-when mono">2021.11 — 2022.10</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.7.title"></h3>
+            <p class="job-role mono" data-i18n="exp.7.role"></p>
+            <p class="job-desc" data-i18n="exp.7.desc"></p>
+          </div>
           <ul class="tags"><li>Swift</li><li>Kotlin</li><li>Flutter</li><li>Next.js</li><li>AWS</li><li>DynamoDB</li></ul>
         </li>
-        <li class="tl-item reveal">
-          <div class="tl-meta"><span class="tl-period">2022.04 — 2022.08</span><span class="tl-role" data-i18n="exp.8.role"></span></div>
-          <h3 data-i18n="exp.8.title"></h3>
-          <p data-i18n="exp.8.desc"></p>
+        <li class="job reveal">
+          <span class="job-no mono">08</span>
+          <span class="job-when mono">2022.04 — 2022.08</span>
+          <div class="job-main">
+            <h3 data-i18n="exp.8.title"></h3>
+            <p class="job-role mono" data-i18n="exp.8.role"></p>
+            <p class="job-desc" data-i18n="exp.8.desc"></p>
+          </div>
           <ul class="tags"><li>Flutter</li><li>FastAPI</li><li>Python</li><li>Stripe</li><li>AWS</li></ul>
         </li>
       </ol>
@@ -324,11 +358,14 @@
 
     <!-- Contact -->
     <section class="section contact" id="contact">
-      <h2 class="section-title reveal"><span class="section-num">05</span><span data-i18n="contact.title"></span></h2>
-      <p class="contact-line reveal" data-i18n="contact.line"></p>
-      <p class="reveal" data-i18n="contact.text"></p>
+      <header class="sec-head reveal">
+        <span class="sec-no mono">05</span>
+        <h2 class="sec-title" data-i18n="contact.title"></h2>
+      </header>
+      <p class="contact-line" data-i18n="contact.line" data-split></p>
+      <p class="contact-text" data-i18n="contact.text"></p>
       <div class="contact-links reveal">
-        <a class="btn btn-solid" href="https://github.com/mazemaze" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-solid" href="https://github.com/mazemaze" target="_blank" rel="noopener">GitHub<b aria-hidden="true">↗</b></a>
         <a class="btn btn-ghost" href="mailto:dev.mobile.yh.ch@gmail.com">Email</a>
         <a class="btn btn-ghost" href="https://www.linkedin.com/in/yujiro-hikawa-97784a20b/" target="_blank" rel="noopener">LinkedIn</a>
         <a class="btn btn-ghost" href="assets/skill-sheet.pdf" download data-i18n="contact.resume"></a>
@@ -337,13 +374,24 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <p>© <span id="year">2026</span> Yujiro Hikawa</p>
+  <dialog class="reel-dialog" id="reelDialog" aria-label="Showreel">
+    <button class="reel-close mono" type="button" id="reelClose"><span data-i18n="reel.close"></span> ✕</button>
+    <div class="reel-frame">
+      <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
+      <video class="reel-video" lang="en" src="showreel/showreel.mp4" poster="showreel/docs/poster-en.jpg" aria-label="Showreel: Yujiro Hikawa, full-stack engineer, in 15 seconds" controls playsinline preload="none"></video>
+      <video class="reel-video" lang="ja" src="showreel/showreel-ja.mp4" poster="showreel/docs/poster-ja.jpg" aria-label="ショーリール：フルスタックエンジニア ヒカワ ユウジロウを15秒で紹介" controls playsinline preload="none"></video>
+    </div>
+    <p class="reel-error mono" id="reelError" hidden><span data-i18n="reel.error"></span> <a href="showreel/showreel.mp4" download data-i18n="reel.download"></a></p>
+  </dialog>
+
+  <footer class="site-footer mono">
+    <p>© <span id="year">2026</span> Yujiro Hikawa<i class="dot" aria-hidden="true"></i></p>
+    <p>Tokyo / Full remote</p>
   </footer>
 
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/main.js"></script>
-  <script type="module" src="assets/js/scene.js"></script>
+  <script type="module" src="assets/js/story.js"></script>
   <script data-goatcounter="https://mazemaze.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
