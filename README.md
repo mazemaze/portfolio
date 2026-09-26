@@ -1,19 +1,20 @@
 # Yujiro Hikawa — Portfolio
 
-A bilingual (Japanese / English) single-page portfolio with a Three.js WebGL
-hero. Zero build step — plain HTML/CSS/JS, libraries loaded from pinned CDNs.
+A bilingual (Japanese / English) single-page portfolio in the showreel's visual
+language, with a scroll-driven Three.js particle story behind it. Zero build step — plain HTML/CSS/JS, libraries loaded from pinned CDNs.
 
 ## Structure
 
 ```
-index.html                 # all sections, data-i18n attributes
+index.html                 # all sections, data-i18n attributes ("Signal" design)
 skill-match.html           # ◯/△/× skill-match sheet for recruiting agents (JA-only, self-contained JS)
-showreel/                  # 15s showreel, English + Japanese (HyperFrames source + showreel.mp4 / showreel-ja.mp4; see showreel/README.md)
-assets/css/style.css       # dark cinematic theme
+showreel/                  # 15s showreel, English + Japanese (HyperFrames source, videos, silent loops; see showreel/README.md)
+assets/css/signal.css      # home page design: ink / bone / signal orange, HUD details, motion
+assets/css/style.css       # previous theme, still used by skill-match.html
 assets/css/skill-match.css # skill-match page tables/FAQ styles
 assets/js/i18n.js          # JA/EN dictionary + language toggle
-assets/js/scene.js         # Three.js particle scene (ES module)
-assets/js/main.js          # scroll reveals, header, misc UI
+assets/js/story.js         # Three.js particle story: one point cloud, a formation per section
+assets/js/main.js          # boot, kinetic type, reveals, counters, HUD, menu, showreel loops/player
 .nojekyll                  # serve as plain static files on GitHub Pages
 ```
 
