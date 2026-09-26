@@ -508,6 +508,8 @@ html[lang="ja"] .contact-line { font-family: var(--display); font-size: clamp(28
 .how-i-work dl > div { padding: 16px 24px 16px 0; }
 .how-i-work dt { color: var(--ash); }
 .how-i-work dd { margin-top: 8px; color: var(--bone); font-size: 16px; line-height: 1.5; overflow-wrap: break-word; }
+/* keep the grid left of where the contact dot settles (story.js places it at the right of Contact) */
+@media (min-width: 861px) { .how-i-work dl { max-width: 840px; } }
 .contact-mail { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 48px; }
 .mail-address { font-family: var(--mono); font-size: 20px; letter-spacing: 0.02em; color: var(--bone); padding-bottom: 4px; border-bottom: 2px solid var(--sig); overflow-wrap: anywhere; transition: color var(--t-small); }
 .mail-address:hover { color: var(--sig); }

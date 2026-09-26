@@ -6,14 +6,17 @@ set -e
 cd "$(dirname "$0")/.."
 CHROME="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 OUT=assets/yujiro-hikawa-cv.pdf
+TMP="$OUT.tmp"
 LOG=$(mktemp)
-rm -f "$OUT"
+rm -f "$TMP"
+# Print to a temporary file first, so a failed build leaves the existing PDF untouched.
 if ! "$CHROME" --headless=new --disable-gpu --no-pdf-header-footer --virtual-time-budget=3000 \
-     --print-to-pdf="$OUT" "file://$PWD/cv/cv-en.html" 2>"$LOG" || [ ! -s "$OUT" ]; then
+     --print-to-pdf="$TMP" "file://$PWD/cv/cv-en.html" 2>"$LOG" || [ ! -s "$TMP" ]; then
   cat "$LOG" >&2
   echo "cv/build.sh: failed to write $OUT" >&2
-  rm -f "$LOG"
+  rm -f "$LOG" "$TMP"
   exit 1
 fi
 rm -f "$LOG"
+mv "$TMP" "$OUT"
 echo "wrote $OUT"
