@@ -62,7 +62,7 @@ does this). The Japanese copy lives in the `JA` list in `index.html`: it uses th
 portfolio site’s Japanese text (`assets/js/i18n.js`, `ja`) where it exists, and
 translates the English reel’s line otherwise. Latin graphic labels (HUD, badge, stack
 marquee, HIKAWA) stay in English. The name and role
-switch to ヒカワ ユウジロウ / フルスタックエンジニア · PM · テックリード unless you pass your own.
+switch to ヒカワ ユウジロウ / AI・フルスタックエンジニア · PM · テックリード unless you pass your own.
 
 Japanese text uses Zen Kaku Gothic New, subset to the reel’s characters plus all
 hiragana and katakana (~40 KB per weight instead of ~2.3 MB). After changing the
@@ -74,7 +74,7 @@ the rendering machine’s system font.
 ### Change the end card
 
 The end card’s name, role and contact line are composition variables (defaults:
-`Yujiro Hikawa`, `Full-Stack Engineer · PM · Tech Lead`,
+`Yujiro Hikawa`, `AI & Full-Stack Engineer · PM · Tech Lead`,
 `mazemaze.github.io/portfolio · github.com/mazemaze`). A name stays on one line at
 up to 250 px; multi-word names wrap between words, at up to 210 px, when that makes
 them clearly larger. A single word too long for the line shrinks to fit. Pass `"contact":""` to hide the contact line. Latin and
