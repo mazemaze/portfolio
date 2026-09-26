@@ -1,0 +1,5 @@
+renders/
+snapshots/
+.hyperframes/
+audio/soundtrack.wav
+node_modules/
