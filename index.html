@@ -63,9 +63,10 @@
     <nav class="site-nav mono" aria-label="Primary" data-i18n-aria="aria.nav">
       <a href="#about"><em>01</em><span data-i18n="nav.about"></span></a>
       <a href="#strengths"><em>02</em><span data-i18n="nav.strengths"></span></a>
-      <a href="#skills"><em>03</em><span data-i18n="nav.skills"></span></a>
-      <a href="#experience"><em>04</em><span data-i18n="nav.experience"></span></a>
-      <a href="#contact"><em>05</em><span data-i18n="nav.contact"></span></a>
+      <a href="#work"><em>03</em><span data-i18n="nav.work"></span></a>
+      <a href="#skills"><em>04</em><span data-i18n="nav.skills"></span></a>
+      <a href="#experience"><em>05</em><span data-i18n="nav.experience"></span></a>
+      <a href="#contact"><em>06</em><span data-i18n="nav.contact"></span></a>
     </nav>
     <div class="lang-toggle mono" role="group" aria-label="Language" data-i18n-aria="aria.lang">
       <button type="button" data-lang="ja">JP</button>
@@ -82,9 +83,10 @@
     <nav aria-label="Mobile" data-i18n-aria="aria.mobileNav">
       <a href="#about"><em class="mono">01</em><span data-i18n="nav.about"></span></a>
       <a href="#strengths"><em class="mono">02</em><span data-i18n="nav.strengths"></span></a>
-      <a href="#skills"><em class="mono">03</em><span data-i18n="nav.skills"></span></a>
-      <a href="#experience"><em class="mono">04</em><span data-i18n="nav.experience"></span></a>
-      <a href="#contact"><em class="mono">05</em><span data-i18n="nav.contact"></span></a>
+      <a href="#work"><em class="mono">03</em><span data-i18n="nav.work"></span></a>
+      <a href="#skills"><em class="mono">04</em><span data-i18n="nav.skills"></span></a>
+      <a href="#experience"><em class="mono">05</em><span data-i18n="nav.experience"></span></a>
+      <a href="#contact"><em class="mono">06</em><span data-i18n="nav.contact"></span></a>
     </nav>
   </div>
 
@@ -98,7 +100,7 @@
       <p class="available mono boot"><span class="pulse" aria-hidden="true"></span><span data-i18n="hero.available"></span></p>
       <div class="hero-cta boot">
         <a class="btn btn-solid" href="#contact"><span data-i18n="hero.cta.contact"></span><b aria-hidden="true">→</b></a>
-        <a class="btn btn-ghost" href="#experience" data-i18n="hero.cta.work"></a>
+        <a class="btn btn-ghost" href="#work" data-i18n="hero.cta.work"></a>
         <button class="btn btn-play" type="button" data-play-reel><i aria-hidden="true"></i><span data-i18n="hero.cta.reel"></span></button>
       </div>
       <a class="scroll-cue mono boot" href="#showreel"><span data-i18n="hud.scroll"></span><i aria-hidden="true"></i></a>
@@ -193,12 +195,71 @@
       </div>
     </section>
 
+    <!-- Work: three case studies (challenge, what I did, result) -->
+    <section class="section" id="work">
+      <header class="sec-head reveal">
+        <span class="sec-no mono">03</span>
+        <h2 class="sec-title" data-i18n="work.title"></h2>
+        <p class="sec-lead" data-i18n="work.lead"></p>
+      </header>
+      <div class="cases">
+        <article class="case reveal" aria-labelledby="case1">
+          <div class="case-side" aria-hidden="true">
+            <span class="case-no mono">01</span>
+            <p class="case-figure"><b data-i18n="work.1.figure"></b><span class="mono" data-i18n="work.1.figureLabel"></span></p>
+          </div>
+          <div class="case-main">
+            <h3 id="case1" data-i18n="work.1.title"></h3>
+            <p class="case-meta mono"><span>2023.02 — 2023.05</span><span data-i18n="work.1.role"></span><span data-i18n="work.1.field"></span></p>
+            <dl class="case-story">
+              <div><dt class="mono" data-i18n="work.challenge"></dt><dd data-i18n="work.1.challenge"></dd></div>
+              <div><dt class="mono" data-i18n="work.did"></dt><dd data-i18n="work.1.did"></dd></div>
+              <div class="case-result"><dt class="mono" data-i18n="work.result"></dt><dd data-i18n="work.1.result"></dd></div>
+            </dl>
+            <ul class="tags"><li>Flutter</li><li>Solidity</li><li>Vue.js</li><li>Firebase</li></ul>
+          </div>
+        </article>
+        <article class="case reveal" aria-labelledby="case2">
+          <div class="case-side" aria-hidden="true">
+            <span class="case-no mono">02</span>
+            <p class="case-figure"><b data-i18n="work.2.figure"></b><span class="mono" data-i18n="work.2.figureLabel"></span></p>
+          </div>
+          <div class="case-main">
+            <h3 id="case2" data-i18n="work.2.title"></h3>
+            <p class="case-meta mono"><span>2025.09 — 2026.04</span><span data-i18n="work.2.role"></span><span data-i18n="work.2.field"></span></p>
+            <dl class="case-story">
+              <div><dt class="mono" data-i18n="work.challenge"></dt><dd data-i18n="work.2.challenge"></dd></div>
+              <div><dt class="mono" data-i18n="work.did"></dt><dd data-i18n="work.2.did"></dd></div>
+              <div class="case-result"><dt class="mono" data-i18n="work.result"></dt><dd data-i18n="work.2.result"></dd></div>
+            </dl>
+            <ul class="tags"><li>Flutter</li><li>Dart</li><li>React</li><li>Firebase</li><li>OpenAI API</li></ul>
+          </div>
+        </article>
+        <article class="case reveal" aria-labelledby="case3">
+          <div class="case-side" aria-hidden="true">
+            <span class="case-no mono">03</span>
+            <p class="case-figure"><b data-i18n="work.3.figure"></b><span class="mono" data-i18n="work.3.figureLabel"></span></p>
+          </div>
+          <div class="case-main">
+            <h3 id="case3" data-i18n="work.3.title"></h3>
+            <p class="case-meta mono"><span>2022.05 — 2023.04</span><span data-i18n="work.3.role"></span><span data-i18n="work.3.field"></span></p>
+            <dl class="case-story">
+              <div><dt class="mono" data-i18n="work.challenge"></dt><dd data-i18n="work.3.challenge"></dd></div>
+              <div><dt class="mono" data-i18n="work.did"></dt><dd data-i18n="work.3.did"></dd></div>
+              <div class="case-result"><dt class="mono" data-i18n="work.result"></dt><dd data-i18n="work.3.result"></dd></div>
+            </dl>
+            <ul class="tags"><li>Swift</li><li>Kotlin</li><li>Go</li><li>AWS</li><li>Flutter</li></ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <!-- Skills -->
     <section class="section" id="skills">
       <div class="skills-layout">
         <div class="skills-side">
           <header class="sec-head reveal">
-            <span class="sec-no mono">03</span>
+            <span class="sec-no mono">04</span>
             <h2 class="sec-title" data-i18n="skills.title"></h2>
             <p class="sec-lead" data-i18n="skills.lead"></p>
           </header>
@@ -269,7 +330,7 @@
     <!-- Experience -->
     <section class="section" id="experience">
       <header class="sec-head reveal">
-        <span class="sec-no mono">04</span>
+        <span class="sec-no mono">05</span>
         <h2 class="sec-title" data-i18n="experience.title"></h2>
         <p class="sec-lead" data-i18n="experience.lead"></p>
       </header>
@@ -360,7 +421,7 @@
     <!-- Contact -->
     <section class="section contact" id="contact">
       <header class="sec-head reveal">
-        <span class="sec-no mono">05</span>
+        <span class="sec-no mono">06</span>
         <h2 class="sec-title" data-i18n="contact.title"></h2>
       </header>
       <p class="contact-line" data-i18n="contact.line" data-split="latin"></p>
