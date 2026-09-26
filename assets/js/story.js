@@ -1,9 +1,9 @@
 /* ============================================================
    Particle story — one point cloud that changes formation as you
    scroll: sphere (hero) → screen (showreel) → lattice (about) →
-   three clusters (strengths) → orbit rings (skills) → spine with eight
-   nodes (experience) → the orange dot (contact), the same dot that
-   ends the showreel. All formations live on the GPU; scroll only
+   three clusters (strengths, carried on through the case studies in work) →
+   orbit rings (skills) → spine with eight nodes (experience) → the
+   orange dot (contact), the same dot that ends the showreel. All formations live on the GPU; scroll only
    moves one uniform.
    ============================================================ */
 
@@ -11,17 +11,21 @@ import * as THREE from "three";
 
 const canvas = document.getElementById("gl");
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const SECTIONS = ["hero", "showreel", "about", "strengths", "skills", "experience", "contact"];
+const SECTIONS = ["hero", "showreel", "about", "strengths", "work", "skills", "experience", "contact"];
+// The formation each section shows. Work keeps the three clusters from Strengths.
+const FORM = [0, 1, 2, 3, 3, 4, 5, 6];
+const LAST = SECTIONS.length - 1;
 const BONE = new THREE.Color(0xf2ede4);
 const SIGNAL = new THREE.Color(0xff4d1f);
 
-// Where each formation sits: [x, scale, y, brightness] in world units at z=0, per layout.
+// Where the formation sits in each section: [x, scale, y, brightness] in world units at z=0, per layout.
 // Formations behind body text are pushed to the edge and dimmed so the copy stays readable.
 const PLACE_WIDE = [
   [1.55, 1.0, 0.0, 1.0], // hero: sphere beside the name
   [0.0, 2.15, -0.35, 0.75], // showreel: the screen frames the video
   [2.9, 0.75, 0.9, 0.4], // about (x is worked out in layout())
   [0.3, 1.0, 0.9, 0.9], // strengths: clusters above the cards
+  [3.3, 0.55, 0.3, 0.35], // work: the clusters move to the right margin (x from layout())
   [3.3, 0.85, 0.3, 0.35], // skills: orbit rings in the right margin (x from layout())
   [4.35, 0.95, 0.0, 0.4], // experience: spine along the right edge (x from layout())
   [3.1, 1.35, 0.35, 1.0], // contact: the dot, clear of the headline
@@ -31,15 +35,16 @@ const PLACE_NARROW = [
   [0.0, 0.95, 0.0, 0.35],
   [0.0, 0.6, 0.0, 0.15],
   [0.0, 0.6, 1.8, 0.5],
+  [0.0, 0.5, 0.0, 0.15],
   [0.0, 0.6, 0.0, 0.15],
   [0.0, 0.7, 0.0, 0.15],
   [0.0, 1.0, 1.9, 1.0],
 ];
 // Flat formations (screen, radar-like) would turn edge-on while spinning; hold them still.
-const FLAT = [1];
-// Wide layouts: these formations live in the right-hand margin, worked out from the real layout.
-// Value = how far each reaches sideways at scale 1 while turning (world units).
-const MARGIN = { 2: 1.9, 4: 1.9, 5: 0.6 }; // about lattice, skills rings, experience spine
+const FLAT = [1]; // formation indices
+// Wide layouts: in these sections the formation lives in the right-hand margin, worked out from
+// the real layout. Value = how far it reaches sideways at scale 1 while turning (world units).
+const MARGIN = { 2: 1.9, 4: 2.4, 5: 1.9, 6: 0.6 }; // about lattice, work clusters, skills rings, experience spine
 
 function mulberry32(a) {
   return function () {
@@ -271,7 +276,7 @@ function start() {
     mouse.ty = e.clientY / window.innerHeight - 0.5;
   }, { passive: true });
 
-  let p = target();
+  let q = target();
   let px = 0, ps = 1, py = 0, pa = 1;
   const clock = new THREE.Clock();
   const introStart = performance.now();
@@ -289,7 +294,7 @@ function start() {
     const room = Math.max(0, halfW - content) / 2; // half the margin's width
     placeTable = PLACE_WIDE.map((v, k) => {
       // the contact dot: on wide screens, a little further from the headline's final "." / 「。」
-      if (k === 6) return [Math.max(v[0], Math.min(3.45, halfW - 1.3)), v[1], v[2], v[3]];
+      if (k === LAST) return [Math.max(v[0], Math.min(3.45, halfW - 1.3)), v[1], v[2], v[3]];
       if (!(k in MARGIN)) return v;
       const [, s0, y, a] = v;
       const s = Math.max(s0 * 0.7, Math.min(s0, room / MARGIN[k]));
@@ -309,12 +314,17 @@ function start() {
     return [(sx / drawnW - 0.5) * 2 * halfH * camera.aspect, 0.8, (0.5 - sy / drawnH) * 2 * halfH, 1.0];
   }
 
-  function place(pp) {
+  // q is the scroll position in sections (0 = hero … LAST = contact); p is the formation it shows.
+  function formation(qq) {
+    const k = Math.min(LAST - 1, Math.floor(qq));
+    return FORM[k] + (FORM[k + 1] - FORM[k]) * (qq - k);
+  }
+  function place(qq) {
     const P = placeTable;
-    const k = Math.min(5, Math.floor(pp));
-    const f = pp - k;
+    const k = Math.min(LAST - 1, Math.floor(qq));
+    const f = qq - k;
     const e = f * f * (3 - 2 * f);
-    const to = k === 5 && copyBtn && narrow() ? contactSpot() : P[k + 1];
+    const to = k === LAST - 1 && copyBtn && narrow() ? contactSpot() : P[k + 1];
     return P[k].map((v, i) => v + (to[i] - v) * e);
   }
 
@@ -322,21 +332,22 @@ function start() {
   function frame() {
     const t = clock.getElapsedTime();
     const goal = target();
-    p += (goal - p) * (reduced ? 1 : 0.07);
+    q += (goal - q) * (reduced ? 1 : 0.07);
+    const p = formation(q);
     uniforms.uP.value = p;
     uniforms.uTime.value = reduced ? 0 : t;
     if (!reduced) {
       const k = Math.min(1, (performance.now() - introStart) / 2200);
       uniforms.uIntro.value = 1 - Math.pow(1 - k, 3);
     }
-    const [tx, ts, ty, ta] = place(p);
+    const [tx, ts, ty, ta] = place(q);
     const ease = reduced ? 1 : 0.08;
     px += (tx - px) * ease;
     ps += (ts - ps) * ease;
     py += (ty - py) * ease;
     pa += (ta - pa) * ease;
-    // dissolve mid-morph: a formation spread out between two sections dims rather than streaking over text
-    uniforms.uFade.value = pa * (1 - 0.8 * Math.sin(Math.PI * (p % 1)));
+    // dissolve between sections: a formation on the move dims rather than streaking over text
+    uniforms.uFade.value = pa * (1 - 0.8 * Math.sin(Math.PI * (q % 1)));
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
     const spin = reduced ? 0 : t * 0.08;

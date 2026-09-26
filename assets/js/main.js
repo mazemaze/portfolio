@@ -127,7 +127,7 @@
   const progress = document.getElementById("scrollProgress");
   const chapterEl = document.getElementById("hudChapter");
   const pctEl = document.getElementById("hudPct");
-  const chapterIds = ["hero", "showreel", "about", "strengths", "skills", "experience", "contact"];
+  const chapterIds = ["hero", "showreel", "about", "strengths", "work", "skills", "experience", "contact"];
   let chapters = [];
   function hudLabels() {
     const lang = document.documentElement.lang === "ja" ? "ja" : "en";
@@ -138,6 +138,7 @@
       showreel: reel,
       about: dict["nav.about"],
       strengths: dict["nav.strengths"],
+      work: dict["nav.work"],
       skills: dict["nav.skills"],
       experience: dict["nav.experience"],
       contact: dict["nav.contact"],
@@ -344,7 +345,7 @@
   document.addEventListener(
     "pointermove",
     (e) => {
-      const card = e.target.closest(".skill, .strength, .job");
+      const card = e.target.closest(".skill, .strength, .job, .case");
       if (!card) return;
       const r = card.getBoundingClientRect();
       card.style.setProperty("--mx", ((e.clientX - r.left) / r.width) * 100 + "%");

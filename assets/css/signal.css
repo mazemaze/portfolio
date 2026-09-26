@@ -376,11 +376,11 @@ html[lang="ja"] .loop.alt[lang="ja"], html:not([lang="ja"]) .loop.alt[lang="en"]
 
 .strengths { display: grid; grid-template-columns: repeat(3, 1fr); }
 .strength { position: relative; overflow: hidden; border: 1px solid var(--line); margin: 0 -1px -1px 0; background: var(--panel); padding: 32px 32px 32px; min-height: 420px; display: flex; flex-direction: column; transition: opacity var(--t-large), transform var(--t-large), background var(--t-small); }
-.strength::before, .skill::before, .job::before {
+.strength::before, .skill::before, .job::before, .case::before {
   content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity var(--t-small);
   background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 77, 31, 0.13), rgba(255, 77, 31, 0) 60%);
 }
-.strength:hover::before, .skill:hover::before, .job:hover::before { opacity: 1; }
+.strength:hover::before, .skill:hover::before, .job:hover::before, .case:hover::before { opacity: 1; }
 .strength::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--sig); transform: scaleX(0); transform-origin: 0 50%; transition: transform var(--t-enter); }
 .strength:hover::after { transform: scaleX(1); }
 .strength:hover { background: rgba(28, 27, 35, 0.9); }
@@ -404,6 +404,45 @@ html[lang="ja"] .loop.alt[lang="ja"], html:not([lang="ja"]) .loop.alt[lang="en"]
 .strength h3 { margin-top: auto; font-family: var(--display); font-weight: 800; font-size: clamp(24px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.01em; font-variation-settings: "wdth" 84; }
 html[lang="ja"] .strength h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.3; }
 .strength p { margin-top: 16px; color: var(--ash); font-size: 16px; line-height: 1.65; }
+
+/* ---------- Work (case studies) ---------- */
+
+.cases { display: grid; }
+.case {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: minmax(200px, 300px) minmax(0, 1fr); gap: 48px;
+  border: 1px solid var(--line); margin-top: -1px; background: var(--panel); padding: 48px;
+  transition: opacity var(--t-large), transform var(--t-large), background var(--t-small);
+}
+.case::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--sig); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--t-enter); }
+.case:hover::after { transform: scaleY(1); }
+.case:hover { background: rgba(28, 27, 35, 0.9); }
+.case-side { display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
+.case-no { color: var(--sig); }
+.case-figure { display: flex; flex-direction: column; gap: 12px; }
+.case-figure b {
+  font-family: "Anybody", var(--display); font-weight: 800; font-size: clamp(56px, 6vw, 96px);
+  line-height: 0.9; letter-spacing: -0.03em; font-variation-settings: "wdth" 86; color: var(--bone);
+}
+html[lang="ja"] .case-figure b { font-family: var(--display); font-size: clamp(40px, 4.4vw, 64px); letter-spacing: 0; line-height: 1.1; }
+.case-figure span { color: var(--ash); }
+.case h3 { font-family: var(--display); font-weight: 800; font-size: clamp(24px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.01em; font-variation-settings: "wdth" 88; }
+html[lang="ja"] .case h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.35; }
+.case-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 16px; color: var(--ash); }
+.case-meta span:nth-child(2) { color: var(--sig); }
+.case-story { margin-top: 32px; border-top: 1px solid var(--line); }
+.case-story > div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.case-story dt { color: var(--ash); padding-top: 4px; }
+.case-story dd { color: var(--ash); font-size: 16px; line-height: 1.65; max-width: 680px; }
+.case-result dt { color: var(--sig); }
+.case-result dd { color: var(--bone); font-size: 20px; line-height: 1.5; font-weight: 500; }
+.case .tags { margin-top: 24px; }
+.case-link { display: inline-block; margin-top: 24px; text-transform: none; color: var(--bone); padding-bottom: 4px; border-bottom: 2px solid var(--sig); transition: color var(--t-small); }
+.case-link:hover { color: var(--sig); }
+/* Japanese phrase-aware wrapping keeps long compounds whole; let them break rather than overflow */
+.case h3, .case-meta span, .case-story dd { overflow-wrap: break-word; }
+.case-figure { min-width: 0; }
+.case-figure b, .case-figure span { overflow-wrap: anywhere; }
 
 /* ---------- Skills ---------- */
 
@@ -480,12 +519,19 @@ html[lang="ja"] .contact-line { font-family: var(--display); font-size: clamp(28
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1100px) {
+  /* one column: the story needs the width more than the side figure does */
+  .case { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .case-side { flex-direction: row; align-items: flex-end; }
+  .case-figure { align-items: flex-end; text-align: right; }
+  .site-nav { gap: 24px; } /* six links + language toggle must fit down to 861 px */
+  .site-nav a em { display: none; }
   .job { grid-template-columns: 48px 150px minmax(0, 1fr); }
   .job .tags { grid-column: 3; justify-content: flex-start; }
   .skills-layout { grid-template-columns: 1fr; }
   .skills-side { position: static; display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: end; }
 }
 @media (max-width: 860px) {
+  .case { padding: 32px 24px; }
   .site-nav, .hud-chapter, .hud-scroll { display: none; }
   .lang-toggle { margin-left: auto; }
   .menu-btn { display: block; }
@@ -524,6 +570,10 @@ html[lang="ja"] .contact-line { font-family: var(--display); font-size: clamp(28
   .shade { background: linear-gradient(180deg, rgba(13, 12, 17, 0.3), rgba(13, 12, 17, 0.62)); }
 }
 @media (max-width: 480px) {
+  .case { padding: 24px 16px; }
+  .case-side { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .case-figure { align-items: flex-start; text-align: left; }
+  .case-story > div { grid-template-columns: 1fr; gap: 8px; }
   .btn { height: 52px; padding: 0 24px; font-size: 12px; }
   .hero-cta .btn { flex: 1 1 100%; }
   .contact-links .btn { flex: 1 1 100%; white-space: normal; height: auto; min-height: 52px; padding: 12px 16px; text-align: center; }
