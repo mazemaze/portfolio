@@ -1,7 +1,7 @@
 /* ============================================================
    Particle story — one point cloud that changes formation as you
    scroll: sphere (hero) → screen (showreel) → lattice (about) →
-   three clusters (strengths, and the three case studies in work) →
+   three clusters (strengths, carried on through the case studies in work) →
    orbit rings (skills) → spine with eight nodes (experience) → the
    orange dot (contact), the same dot that ends the showreel. All formations live on the GPU; scroll only
    moves one uniform.
@@ -12,7 +12,7 @@ import * as THREE from "three";
 const canvas = document.getElementById("gl");
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const SECTIONS = ["hero", "showreel", "about", "strengths", "work", "skills", "experience", "contact"];
-// The formation each section shows. Work keeps the three clusters: three strengths, three case studies.
+// The formation each section shows. Work keeps the three clusters from Strengths.
 const FORM = [0, 1, 2, 3, 3, 4, 5, 6];
 const LAST = SECTIONS.length - 1;
 const BONE = new THREE.Color(0xf2ede4);
