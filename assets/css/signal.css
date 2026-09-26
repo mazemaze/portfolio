@@ -426,8 +426,6 @@ html[lang="ja"] .strength h3 { font-size: clamp(24px, 2.2vw, 32px); line-height:
 }
 html[lang="ja"] .case-figure b { font-family: var(--display); font-size: clamp(40px, 4.4vw, 64px); letter-spacing: 0; line-height: 1.1; }
 .case-figure span { color: var(--ash); }
-.case-figure b.word { font-size: clamp(40px, 4vw, 64px); } /* a phrase, not a number */
-html[lang="ja"] .case-figure b.word { font-size: clamp(32px, 3.2vw, 48px); }
 .case h3 { font-family: var(--display); font-weight: 800; font-size: clamp(24px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.01em; font-variation-settings: "wdth" 88; }
 html[lang="ja"] .case h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.35; }
 .case-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 16px; color: var(--ash); }
@@ -439,6 +437,8 @@ html[lang="ja"] .case h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.3
 .case-result dt { color: var(--sig); }
 .case-result dd { color: var(--bone); font-size: 20px; line-height: 1.5; font-weight: 500; }
 .case .tags { margin-top: 24px; }
+.case-link { display: inline-block; margin-top: 24px; text-transform: none; color: var(--bone); padding-bottom: 4px; border-bottom: 2px solid var(--sig); transition: color var(--t-small); }
+.case-link:hover { color: var(--sig); }
 /* Japanese phrase-aware wrapping keeps long compounds whole; let them break rather than overflow */
 .case h3, .case-meta span, .case-story dd { overflow-wrap: break-word; }
 .case-figure { min-width: 0; }
