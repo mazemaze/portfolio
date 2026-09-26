@@ -41,6 +41,10 @@ const I18N = {
     "reel.download": "Download it instead",
     "reel.caption": "15 sec · with sound · built in code with HTML + GSAP",
 
+    "reel.title": "Showreel",
+    "reel.lead": "My work in fifteen seconds.",
+    "reel.caption": "15 sec · with sound · built in code with HTML + GSAP",
+
     "about.title": "About",
     "about.lead": "An engineer who ships — from requirements to release, and everything after.",
     "about.p1": "After working in contracted development and freelancing, I became the development lead and lead engineer for an app with tens of thousands of users, overseeing the engineering department while contributing to a wide range of projects on the side.",
@@ -210,6 +214,10 @@ const I18N = {
     "reel.close": "閉じる",
     "reel.error": "動画を読み込めませんでした。",
     "reel.download": "ダウンロードして観る",
+    "reel.caption": "15秒 · 音声あり · HTML + GSAP · コードで制作",
+
+    "reel.title": "ショーリール",
+    "reel.lead": "15秒でわかる、私の仕事。",
     "reel.caption": "15秒 · 音声あり · HTML + GSAP · コードで制作",
 
     "about.title": "私について",
