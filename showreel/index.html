@@ -3,7 +3,7 @@
   lang="en"
   data-composition-variables='[
     {"id":"name","type":"string","label":"Name on the end card","default":"Yujiro Hikawa"},
-    {"id":"role","type":"string","label":"Role line on the end card","default":"Full-Stack Engineer · PM · Tech Lead"},
+    {"id":"role","type":"string","label":"Role line on the end card","default":"AI & Full-Stack Engineer · PM · Tech Lead"},
     {"id":"contact","type":"string","label":"Contact line on the end card","default":"mazemaze.github.io/portfolio · github.com/mazemaze"},
     {"id":"lang","type":"enum","label":"Language","default":"en","options":[{"value":"en","label":"English"},{"value":"ja","label":"日本語"}]}
   ]'
@@ -606,7 +606,7 @@
                 </svg>
               </div>
               <div class="card cardB" id="cardB">
-                <div class="mono">From Sep 2026</div>
+                <div class="mono">Open to work</div>
                 <div class="toggle-row"><span class="lbl">Remote</span><div class="tgl-track" id="track"><div class="knob" id="knob"></div></div></div>
               </div>
               <div class="card cardC" id="cardC">
@@ -767,7 +767,7 @@
           ["#s6-list > div:nth-child(2)", "0→1立ち上げ・リーダーシップ"],
           ["#s6-list > div:nth-child(3)", "採用・新人教育"],
           ["#cardA > .mono", "開発したアプリのユーザー数"],
-          ["#cardB > .mono", "2026年9月から"],
+          ["#cardB > .mono", "参画可能"],
           ["#cardB .lbl", "リモート"],
           ["#cardC > .mono", "実績"],
           ["#cardC .ring-val .mono", "プロジェクト"],
@@ -966,7 +966,7 @@
           const nameIn = String(vars.name || "").trim();
           const roleIn = String(vars.role || "");
           const NAME = LANG === "ja" && (!nameIn || nameIn === "Yujiro Hikawa") ? "ヒカワ ユウジロウ" : nameIn.toUpperCase() || "YUJIRO HIKAWA";
-          const ROLE = LANG === "ja" && (!roleIn || roleIn === "Full-Stack Engineer · PM · Tech Lead") ? "フルスタックエンジニア · PM · テックリード" : roleIn || "Full-Stack Engineer · PM · Tech Lead";
+          const ROLE = LANG === "ja" && (!roleIn || roleIn === "AI & Full-Stack Engineer · PM · Tech Lead") ? "AI・フルスタックエンジニア · PM · テックリード" : roleIn || "AI & Full-Stack Engineer · PM · Tech Lead";
           const CONTACT = String(vars.contact ?? "mazemaze.github.io/portfolio · github.com/mazemaze");
 
           const { cells, shapes, altR, altBg, zi, ctx, P, ringLen, bx, by, IR, pcx, pcy, pSize } = setup(NAME, ROLE, CONTACT, LANG);
