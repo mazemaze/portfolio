@@ -288,6 +288,8 @@ function start() {
     const content = (edge / drawnW - 0.5) * 2 * halfW + 0.15; // content column's right edge plus a small gap, world x
     const room = Math.max(0, halfW - content) / 2; // half the margin's width
     placeTable = PLACE_WIDE.map((v, k) => {
+      // the contact dot: on wide screens, a little further from the headline's final "." / 「。」
+      if (k === 6) return [Math.max(v[0], Math.min(3.45, halfW - 1.3)), v[1], v[2], v[3]];
       if (!(k in MARGIN)) return v;
       const [, s0, y, a] = v;
       const s = Math.max(s0 * 0.7, Math.min(s0, room / MARGIN[k]));
@@ -333,7 +335,8 @@ function start() {
     ps += (ts - ps) * ease;
     py += (ty - py) * ease;
     pa += (ta - pa) * ease;
-    uniforms.uFade.value = pa;
+    // dissolve mid-morph: a formation spread out between two sections dims rather than streaking over text
+    uniforms.uFade.value = pa * (1 - 0.8 * Math.sin(Math.PI * (p % 1)));
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
     const spin = reduced ? 0 : t * 0.08;
