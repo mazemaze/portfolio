@@ -159,7 +159,17 @@ const I18N = {
     "contact.title": "Contact",
     "contact.line": "Let's build something.",
     "contact.text": "Open to full-remote engagements from September 2026 — from a single feature to a full product build.",
-    "contact.resume": "Skill Sheet (PDF)",
+    "contact.resume": "CV (PDF)",
+    "contact.resumeHref": "assets/cv-en.pdf",
+    "contact.how.title": "How I work",
+    "contact.how.where": "Where",
+    "contact.how.whereVal": "Full remote from Tokyo (JST, UTC+9)",
+    "contact.how.type": "Engagement",
+    "contact.how.typeVal": "Contract — from a single feature to a full product build",
+    "contact.how.lang": "Languages",
+    "contact.how.langVal": "English (business) · Japanese",
+    "contact.how.roles": "Roles",
+    "contact.how.rolesVal": "AI & full-stack engineering · PM · Tech lead",
     "contact.matrix": "Skill Match Sheet (◯△×, Japanese)",
     "meta.description": "Portfolio of Yujiro Hikawa — AI and full-stack engineer, PM and tech lead. Founder of the AI app platform Euthopia; 0→1 products, apps used by tens of thousands.",
   },
@@ -321,6 +331,16 @@ const I18N = {
     "contact.line": "一緒に作りましょう。",
     "contact.text": "2026年9月よりフルリモートで参画可能です。一機能からプロダクト全体の開発まで、お気軽にご相談ください。",
     "contact.resume": "スキルシート (PDF)",
+    "contact.resumeHref": "assets/skill-sheet.pdf",
+    "contact.how.title": "働き方",
+    "contact.how.where": "拠点",
+    "contact.how.whereVal": "東京からフルリモート（日本時間）",
+    "contact.how.type": "契約形態",
+    "contact.how.typeVal": "業務委託 — 一機能からプロダクト全体まで",
+    "contact.how.lang": "言語",
+    "contact.how.langVal": "日本語・ビジネス英語",
+    "contact.how.roles": "役割",
+    "contact.how.rolesVal": "AI・フルスタック開発 · PM · テックリード",
     "contact.matrix": "スキルマッチ早見表（◯△×）",
     "meta.description": "ヒカワ ユウジロウのポートフォリオ — AI・フルスタックエンジニア / PM / テックリード。AIアプリ構築プラットフォーム「Euthopia」創業者。0→1プロダクト、数万人規模のアプリ開発。",
   },
@@ -348,6 +368,10 @@ const I18N = {
     document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
       const key = el.getAttribute("data-i18n-aria");
       if (dict[key] != null) el.setAttribute("aria-label", dict[key]);
+    });
+    document.querySelectorAll("[data-i18n-href]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-href");
+      if (dict[key] != null) el.setAttribute("href", dict[key]);
     });
     html.setAttribute("lang", lang);
     document.title =
