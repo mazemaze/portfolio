@@ -74,7 +74,7 @@ const I18N = {
     "skills.p.test": "Testing",
     "skills.p.ops": "Ops & Maintenance",
     "skills.p.mgmt": "Management",
-    "skills.note": "Rated A — independent execution, issue resolution, and mentoring — across the entire delivery process on my skill sheet.",
+    "skills.note": "Level A on my skill sheet's scale across the entire delivery process — independent execution, issue resolution, and mentoring.",
     "skills.r.l": "Languages",
     "skills.r.w": "Web",
     "skills.r.m": "Mobile",
