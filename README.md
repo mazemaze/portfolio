@@ -9,6 +9,8 @@ language, with a scroll-driven Three.js particle story behind it. Zero build ste
 index.html                 # all sections, data-i18n attributes ("Signal" design)
 skill-match.html           # ◯/△/× skill-match sheet for recruiting agents (JA-only, self-contained JS)
 showreel/                  # 15s showreel, English + Japanese (HyperFrames source, videos, silent loops; see showreel/README.md)
+cv/cv-en.html              # English CV source (fonts in cv/fonts, SIL OFL); cv/build.sh prints it to assets/yujiro-hikawa-cv.pdf
+assets/skill-sheet.pdf     # Japanese skill sheet (JA site's download); assets/yujiro-hikawa-cv.pdf is the EN site's
 assets/css/signal.css      # home page design: ink / bone / signal orange, HUD details, motion
 assets/css/style.css       # previous theme, still used by skill-match.html
 assets/css/skill-match.css # skill-match page tables/FAQ styles

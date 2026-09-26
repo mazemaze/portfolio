@@ -502,6 +502,14 @@ html[lang="ja"] .contact-line { font-family: var(--display); font-size: clamp(28
 .contact-line .ch { display: inline-block; transform: translateY(0.7em); opacity: 0; transition: transform var(--t-large), opacity var(--t-large); transition-delay: calc(var(--i) * 0.025s); }
 .contact-line.in .ch { transform: none; opacity: 1; }
 .contact-text { margin-top: 32px; max-width: 620px; color: var(--ash); font-size: 20px; }
+.how-i-work { margin-top: 48px; }
+.how-i-work h3 { color: var(--sig); }
+.how-i-work dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 16px; border-top: 1px solid var(--line); }
+.how-i-work dl > div { padding: 16px 24px 16px 0; }
+.how-i-work dt { color: var(--ash); }
+.how-i-work dd { margin-top: 8px; color: var(--bone); font-size: 16px; line-height: 1.5; overflow-wrap: break-word; }
+/* keep the grid left of where the contact dot settles (story.js places it at the right of Contact) */
+@media (min-width: 861px) { .how-i-work dl { max-width: 840px; } }
 .contact-mail { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 48px; }
 .mail-address { font-family: var(--mono); font-size: 20px; letter-spacing: 0.02em; color: var(--bone); padding-bottom: 4px; border-bottom: 2px solid var(--sig); overflow-wrap: anywhere; transition: color var(--t-small); }
 .mail-address:hover { color: var(--sig); }
@@ -531,6 +539,7 @@ html[lang="ja"] .contact-line { font-family: var(--display); font-size: clamp(28
   .skills-side { position: static; display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: end; }
 }
 @media (max-width: 860px) {
+  .how-i-work dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case { padding: 32px 24px; }
   .site-nav, .hud-chapter, .hud-scroll { display: none; }
   .lang-toggle { margin-left: auto; }
@@ -570,6 +579,8 @@ html[lang="ja"] .contact-line { font-family: var(--display); font-size: clamp(28
   .shade { background: linear-gradient(180deg, rgba(13, 12, 17, 0.3), rgba(13, 12, 17, 0.62)); }
 }
 @media (max-width: 480px) {
+  .how-i-work dl { grid-template-columns: minmax(0, 1fr); }
+  .how-i-work dl > div { padding-right: 0; border-bottom: 1px solid var(--line); }
   .case { padding: 24px 16px; }
   .case-side { flex-direction: column; align-items: flex-start; gap: 16px; }
   .case-figure { align-items: flex-start; text-align: left; }
