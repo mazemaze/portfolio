@@ -161,6 +161,7 @@ const I18N = {
     "contact.text": "Open to full-remote engagements from October 2026 — from a single feature to a full product build.",
     "contact.resume": "CV (PDF)",
     "contact.resumeHref": "assets/yujiro-hikawa-cv.pdf",
+    "contact.resumeJa": "Japanese skill sheet (PDF)",
     "contact.how.title": "How I work",
     "contact.how.where": "Where",
     "contact.how.whereVal": "Full remote from Tokyo (JST, UTC+9)",
